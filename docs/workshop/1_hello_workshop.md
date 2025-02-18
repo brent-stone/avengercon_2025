@@ -12,6 +12,7 @@ You'll need the following software installed to begin:
 1. [Docker](https://docs.docker.com/engine/install/)
 2. [Python 3.11](https://www.python.org/downloads/)
 3. [Git](https://git-scm.com/downloads)
+4. [Rust](https://rustup.rs/)
 
 !!! note "Optional software"
     === "Python interpreter manager"
@@ -39,12 +40,13 @@ You'll need the following software installed to begin:
 
 ### Install the `avengercon` package and dependencies
 
-1. Establish a virtual environment with `poetry shell` or [use pip](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/#create-and-use-virtual-environments)
+1. Establish a virtual environment with `poetry env activate` or [use pip]
+   (https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/#create-and-use-virtual-environments)
 2. Install `avengercon` & dependencies with `poetry install` or [use pip](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/#using-a-requirements-file)
 3. Confirm that the local `avengercon` package is available in your virtual environment
 
 ```bash
-(avengercon-py3.11) $ python -m avengercon
+(avengercon-py3.13) $ python -m avengercon
 Hello, Workshop!
 ```
 

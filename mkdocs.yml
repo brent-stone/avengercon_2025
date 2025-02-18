@@ -6,7 +6,7 @@ repo_url: https://github.com/brent-stone/avengercon_2025
 edit_uri: edit/main/docs/
 
 watch:
-  - avengercon
+  - src/avengercon
 
 extra_css:
   - stylesheets/extra.css
