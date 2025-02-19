@@ -1,0 +1,34 @@
+services:
+  kasm:
+    container_name: kasm-ubuntu-desktop
+#    image: kasmweb/ubuntu-jammy-desktop:1.16.0
+    image: kasm-ubuntu-desktop
+    ports:
+      - target: 6901
+        published: 6901
+        mode: host
+    networks:
+      - avengercon
+    build:
+      context: .
+      dockerfile: DockerfileKasmUbuntu
+      target: development
+    volumes:
+      - type: volume
+        source: kasm-ubuntu-volume
+        target: /home/kasm-user
+        read_only: false
+      - type: bind
+        source: ./
+        target: /home/kasm-user/Desktop/avengercon_2025
+        read_only: false
+    environment:
+      VNC_PW: avengercon-2025
+
+volumes:
+  kasm-ubuntu-volume:
+
+networks:
+  avengercon:
+    internal: false
+    name: avengercon
