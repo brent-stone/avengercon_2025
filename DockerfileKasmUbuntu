@@ -8,9 +8,20 @@ WORKDIR $HOME
 
 ######### Customize Container Here ###########
 
+# https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#run
+# "Always combine RUN apt-get update with apt-get install in the same RUN statement."
+RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends \
+    zlib1g \
+    zlib1g-dev \
+    libssl-dev \
+    libbz2-dev \
+    libsqlite3-dev
 
-RUN touch $HOME/Desktop/hello.txt
+# Cleanup the apt cache to reduce image size
+RUN apt-get purge -y --auto-remove
+RUN rm -rf /var/lib/apt/lists/*
 
+COPY ./ $HOME/Desktop/avengercon_2025
 
 ######### End Customizations ###########
 

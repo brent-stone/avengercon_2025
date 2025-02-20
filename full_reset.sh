@@ -12,7 +12,6 @@ ENDCOLOR="\e[0m"
 declare -a PathArray=(
   ".env" \
   ".localhost.env" \
-  ".cloudflare.env" \
 )
 # Iterate over the paths and remove the files if present
 # The [@] operator is get all elements, space-separated
@@ -44,4 +43,4 @@ fi
 # Remove containers for services not defined in the Compose file.
 # Remove named volumes declared in the volumes section of the Compose file and anonymous
 # volumes attached to containers.
-docker compose down --remove-orphans --volumes
+docker compose -f docker-compose-dev-container.yaml down --remove-orphans --volumes

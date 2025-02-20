@@ -1,14 +1,13 @@
 services:
   kasm:
     container_name: kasm-ubuntu-desktop
-#    image: kasmweb/ubuntu-jammy-desktop:1.16.0
     image: kasm-ubuntu-desktop
     ports:
       - target: 6901
         published: 6901
         mode: host
     networks:
-      - avengercon
+      - avengercon-dev-desktop
     build:
       context: .
       dockerfile: DockerfileKasmUbuntu
@@ -18,17 +17,20 @@ services:
         source: kasm-ubuntu-volume
         target: /home/kasm-user
         read_only: false
-      - type: bind
-        source: ./
-        target: /home/kasm-user/Desktop/avengercon_2025
-        read_only: false
+      # Uncomment after initial build/run of the container to enable real-time synchronization between localhost and
+      # in container workshop files
+#      - type: bind
+#        source: ./
+#        target: /home/kasm-user/Desktop/avengercon_2025/
+#        read_only: false
     environment:
+      # username is kasm_user
       VNC_PW: avengercon-2025
 
 volumes:
   kasm-ubuntu-volume:
 
 networks:
-  avengercon:
+  avengercon-dev-desktop:
     internal: false
-    name: avengercon
+    name: avengercon-dev-desktop

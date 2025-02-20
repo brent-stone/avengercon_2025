@@ -17,7 +17,7 @@ services:
       # - ./traefik/data:/config
     ports:
       # Note: It's recommended to use a service like Let's Encrypt or Cloudflare Tunnels
-      # to serve all web traffic through HTTPS. Then, split up this docker-compose.yaml
+      # to serve all web traffic through HTTPS. Then, split up this docker-compose.avengercon-2025.yaml
       # into a 2nd docker-compose.override.yaml for development which holds the direct
       # port exposures of sensitive services like Redis and MinIO APIs. Then remove them
       # from this file so 'prod' deployments don't directly expose the APIs.

@@ -1,0 +1,7 @@
+/.github
+/.idea
+/.venv
+/scripts
+*.sh
+Dockerfile*
+docker-compose*

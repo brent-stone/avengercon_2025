@@ -36,7 +36,6 @@ rando_jupyter_token() {
 # Output filenames
 ENV_FILE="./.env"
 LOCALHOST_ENV_FILE="./.localhost.env"
-CLOUDFLARE_ENV_FILE="./cloudflare.env"
 
 # Top Level Domain (TLS) the services are hosted under: e.g. 'localhost' or "tld.com"
 HTTP_PORT="57073"
@@ -300,17 +299,4 @@ else
     echo "PREFECT_MINIO_FLOWS_BUCKET_NAME=${PREFECT_MINIO_FLOWS_BUCKET_NAME}";
     echo "PREFECT_MINIO_ARTIFACTS_BUCKET_NAME=${PREFECT_MINIO_ARTIFACTS_BUCKET_NAME}";
   } >> $LOCALHOST_ENV_FILE
-fi
-
-# Not used in the actual workshop but included for those who'd like to leverage a
-# cloudflare tunnel (see the commented out service in docker-compose.yaml) to enable
-# TLS communication via Traefik
-if [ -f CLOUDFLARE_ENV_FILE ]; then
-  echo -e "${YELLOW}${CLOUDFLARE_ENV_FILE} already exists${NO_COLOR}. To reset, remove \
-it then re-run this script."
-else
-  touch $CLOUDFLARE_ENV_FILE
-  {
-    echo "TUNNEL_TOKEN=<COPY-PASTE-TOKEN-HERE>";
-  } >> $CLOUDFLARE_ENV_FILE
 fi
