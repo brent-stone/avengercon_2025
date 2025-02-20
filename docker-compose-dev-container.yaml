@@ -10,8 +10,8 @@ services:
       - avengercon-dev-desktop
     build:
       context: .
-      dockerfile: DockerfileKasmUbuntu
-      target: development
+      dockerfile: Dockerfile
+      target: workshop
     volumes:
       - type: volume
         source: kasm-ubuntu-volume

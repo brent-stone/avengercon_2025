@@ -1,11 +1,11 @@
-FROM kasmweb/ubuntu-jammy-desktop:1.16.0 AS development
+FROM kasmweb/ubuntu-jammy-desktop:1.16.0 AS workshop
 USER root
 
-ENV HOME /home/kasm-default-profile
-ENV STARTUPDIR /dockerstartup
-ENV INST_SCRIPTS $STARTUPDIR/install
-WORKDIR $HOME
 ARG PYTHON_VERSION=3.13.2
+ENV HOME=/home/kasm-default-profile
+ENV STARTUPDIR=/dockerstartup
+ENV INST_SCRIPTS=$STARTUPDIR/install
+WORKDIR $HOME
 
 ######### Customize Container Here ###########
 
@@ -27,8 +27,6 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-reco
 RUN apt-get purge -y --auto-remove
 RUN rm -rf /var/lib/apt/lists/*
 
-COPY ./ $HOME/Desktop/avengercon_2025
-
 # Install Rust (pendulum, pydantic, and other Python packages are leveraging Rust now)
 # https://rustup.rs/#
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && echo "installed rust"
@@ -45,50 +43,20 @@ RUN eval "$(pyenv init - bash)"
 # Install Python 3.13 and make it the global default Python interpreter
 RUN pyenv install $PYTHON_VERSION && echo "Python ${PYTHON_VERSION} installed via pyenv"
 RUN pyenv global $PYTHON_VERSION && echo "Python ${PYTHON_VERSION} set as global python interpreter"
-# Sanity check that python is installed as expected
-#RUN python --version
-#
-## Install Poetry
-## https://python-poetry.org/docs/#installing-with-the-official-installer
-#RUN curl -sSL https://install.python-poetry.org | python - && echo "Installed Poetry"
-#
-## Add Poetry to current shell path
-#ENV PATH="/home/kasm-default-profile/.local/bin:$PATH"
 
-#RUN chmod +x $HOME/Desktop/avengercon_2025/scripts/kasm_ubuntu_python_final_setup.sh && echo "prepping to run workshop dependency installation..."
-#RUN $HOME/Desktop/avengercon_2025/scripts/kasm_ubuntu_python_final_setup.sh && echo "workshop dependencies installed"
+# Copy the custom background to the image
+# https://kasmweb.com/docs/latest/how_to/branding.html
+COPY ./avengercon_ix_bg_gemini_imageFX.png /usr/share/backgrounds/bg_default.png
 
-# Activate a poetry virtual environment
-#RUN poetry env activate && echo "prepping poetry virtual environment"
-#RUN source $HOME/Desktop/avengercon_2025/.venv/bin/activate && echo "Poetry virtual environment activated"
-#RUN poetry install && echo "installed python dependencies into virtual environment"
+#COPY ./ $HOME/Desktop/avengercon_2025
 
 ######### End Customizations ###########
 
 RUN chown 1000:0 $HOME
 RUN $STARTUPDIR/set_user_permission.sh $HOME
 
-ENV HOME /home/kasm-user
+ENV HOME=/home/kasm-user
 WORKDIR $HOME
 RUN mkdir -p $HOME && chown -R 1000:0 $HOME
 
 USER 1000
-
-
-#FROM ubuntu as base
-#
-## Install Rust
-#RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-#
-## Install pyenv
-#curl -fsSL https://pyenv.run | bash
-#
-## Add pyenv to bash
-#RUN echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc
-#RUN echo '[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc
-#RUN echo 'eval "$(pyenv init - bash)"' >> ~/.bashrc
-
-# Install poetry
-
-
-# . "$HOME/.cargo/env"
