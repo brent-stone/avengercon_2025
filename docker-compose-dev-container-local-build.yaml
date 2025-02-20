@@ -1,13 +1,17 @@
 services:
   kasm:
     container_name: kasm-ubuntu-desktop
-    image: ghcr.io/brent-stone/avengercon_2025:main
+    image: kasm-ubuntu-desktop
     ports:
       - target: 6901
         published: 6901
         mode: host
     networks:
       - avengercon-dev-desktop
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: workshop
     volumes:
       - type: volume
         source: kasm-ubuntu-volume
