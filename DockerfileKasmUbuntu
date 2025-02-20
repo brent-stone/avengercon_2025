@@ -1,10 +1,11 @@
-FROM kasmweb/ubuntu-jammy-desktop:1.16.0 as development
+FROM kasmweb/ubuntu-jammy-desktop:1.16.0 AS development
 USER root
 
 ENV HOME /home/kasm-default-profile
 ENV STARTUPDIR /dockerstartup
 ENV INST_SCRIPTS $STARTUPDIR/install
 WORKDIR $HOME
+ARG PYTHON_VERSION=3.13.2
 
 ######### Customize Container Here ###########
 
@@ -15,13 +16,52 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-reco
     zlib1g-dev \
     libssl-dev \
     libbz2-dev \
-    libsqlite3-dev
+    liblzma-dev \
+    libsqlite3-dev \
+    libncurses5-dev \
+    libffi-dev \
+    libreadline-dev \
+    tk-dev
 
 # Cleanup the apt cache to reduce image size
 RUN apt-get purge -y --auto-remove
 RUN rm -rf /var/lib/apt/lists/*
 
 COPY ./ $HOME/Desktop/avengercon_2025
+
+# Install Rust (pendulum, pydantic, and other Python packages are leveraging Rust now)
+# https://rustup.rs/#
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && echo "installed rust"
+RUN . "$HOME/.cargo/env" && echo "rust added to current shell"
+
+# Install pyenv and add it to the path
+# https://github.com/pyenv/pyenv?tab=readme-ov-file#installation
+RUN curl -fsSL https://pyenv.run | bash && echo "installed pyenv"
+
+ENV PYENV_ROOT="$HOME/.pyenv"
+ENV PATH="$PYENV_ROOT/bin:$PATH"
+RUN eval "$(pyenv init - bash)"
+
+# Install Python 3.13 and make it the global default Python interpreter
+RUN pyenv install $PYTHON_VERSION && echo "Python ${PYTHON_VERSION} installed via pyenv"
+RUN pyenv global $PYTHON_VERSION && echo "Python ${PYTHON_VERSION} set as global python interpreter"
+# Sanity check that python is installed as expected
+#RUN python --version
+#
+## Install Poetry
+## https://python-poetry.org/docs/#installing-with-the-official-installer
+#RUN curl -sSL https://install.python-poetry.org | python - && echo "Installed Poetry"
+#
+## Add Poetry to current shell path
+#ENV PATH="/home/kasm-default-profile/.local/bin:$PATH"
+
+#RUN chmod +x $HOME/Desktop/avengercon_2025/scripts/kasm_ubuntu_python_final_setup.sh && echo "prepping to run workshop dependency installation..."
+#RUN $HOME/Desktop/avengercon_2025/scripts/kasm_ubuntu_python_final_setup.sh && echo "workshop dependencies installed"
+
+# Activate a poetry virtual environment
+#RUN poetry env activate && echo "prepping poetry virtual environment"
+#RUN source $HOME/Desktop/avengercon_2025/.venv/bin/activate && echo "Poetry virtual environment activated"
+#RUN poetry install && echo "installed python dependencies into virtual environment"
 
 ######### End Customizations ###########
 
