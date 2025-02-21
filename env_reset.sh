@@ -35,7 +35,6 @@ fi
 declare -a PathArray=(
   ".env" \
   ".localhost.env" \
-  ".cloudflare.env" \
 )
 # Iterate over the paths and remove the files if present
 # The [@] operator is get all elements, space-separated
@@ -47,7 +46,3 @@ done
 
 # Run the .env and key initialization script
 /bin/bash ./initialize_env.sh
-
-# Stop any currently running containers for this project.
-# Remove containers for services not defined in the Compose file.
-docker compose down --remove-orphans

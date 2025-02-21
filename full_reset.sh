@@ -44,7 +44,6 @@ fi
 # Remove named volumes declared in the volumes section of the Compose file and anonymous
 # volumes attached to containers.
 while getopts 'mlh' opt; do
-  echo "Access the dev desktop at https://localhost:6901";
   case "${opt}" in
     h)
       echo "Default AMD64 (e.g. intel, AMD) dev desktop image. -m uses an ARM based dev desktop (e.g. Mac M series), -l for locally built dev desktop"

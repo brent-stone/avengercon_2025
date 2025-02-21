@@ -10,7 +10,7 @@ services:
     restart: always
     networks:
       - avengercon
-      - avengercon-dev-desktop
+#      - avengercon-dev-desktop
     volumes:
       # Enable communication between Traefik and the docker daemon
       - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -360,6 +360,6 @@ networks:
   avengercon:
     internal: false
     name: avengercon
-  avengercon-dev-desktop:
-    external: true
-    name: avengercon-dev-desktop
+#  avengercon-dev-desktop:
+#    external: true
+#    name: avengercon-dev-desktop
