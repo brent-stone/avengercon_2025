@@ -19,6 +19,21 @@ env:
 
 jobs:
   build:
+    # Matrix runs-on boilerplate from blacksmith.sh blog post
+    # https://www.blacksmith.sh/blog/building-multi-platform-docker-images-for-arm64-in-github-actions
+    # Available Github ARM runners listed on their runners documentation
+    # https://docs.github.com/en/actions/using-github-hosted-runners/using-github-hosted-runners/about-github-hosted-runners
+    # The Github CI multi-platform docs also include some useful boilerplate
+    # https://docs.docker.com/build/ci/github-actions/multi-platform/
+#    runs-on: ${{ matrix.runner }}
+#    strategy:
+#        matrix:
+#          platform: [ linux/amd64, linux/arm64 ]
+#          include:
+#            - platform: linux/amd64
+#              runner: ubuntu-latest
+#            - platform: linux/arm64
+#              runner: ubuntu-24.04-arm
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -28,6 +43,8 @@ jobs:
       id-token: write
 
     steps:
+      # The Cosign-installer repo has one of the better boilerplate examples
+      # https://github.com/sigstore/cosign-installer
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -35,26 +52,27 @@ jobs:
       # https://github.com/sigstore/cosign-installer
       - name: Install cosign
         if: github.event_name != 'pull_request'
-        uses: sigstore/cosign-installer@59acb6260d9c0ba8f4a2f9d9b48431a222b68e20 #v3.5.0
-        with:
-          cosign-release: 'v2.2.4'
+        uses: sigstore/cosign-installer@v3.8.1
 
-      - # Add support for more platforms with QEMU (optional)
-        # https://github.com/docker/setup-qemu-action
-        name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+      # Add support for more platforms with QEMU (optional)
+      # https://github.com/docker/setup-qemu-action
+      # NOTE: As of 21FEb25, the QEMU emulation runs into a seg fault when installing apt-get dependencies.
+      # This is possibly an out of memory issue on the VM
+      # For now, just manually push ARM images to dockerhub
+#      - name: Set up QEMU
+#        uses: docker/setup-qemu-action@v3.4.0
 
       # Set up BuildKit Docker container builder to be able to build
       # multi-platform images and export cache
       # https://github.com/docker/setup-buildx-action
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@f95db51fddba0c2d1ec667646a06c2ce06100226 # v3.0.0
+        uses: docker/setup-buildx-action@v3.9.0
 
       # Login against a Docker registry except on PR
       # https://github.com/docker/login-action
       - name: Log into registry ${{ env.REGISTRY }}
         if: github.event_name != 'pull_request'
-        uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # v3.0.0
+        uses: docker/login-action@v3.3.0
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -64,7 +82,7 @@ jobs:
       # https://github.com/docker/metadata-action
       - name: Extract Docker metadata
         id: meta
-        uses: docker/metadata-action@96383f45573cb7f253c731d3b3ab81c87ef81934 # v5.0.0
+        uses: docker/metadata-action@v5.6.1
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
@@ -72,15 +90,48 @@ jobs:
       # https://github.com/docker/build-push-action
       - name: Build and push Docker image
         id: build-and-push
-        uses: docker/build-push-action@0565240e2d4ab88bba5387d719585280857ece09 # v5.0.0
+        uses: docker/build-push-action@v6.14.0
         with:
-          platforms: linux/amd64, linux/arm64
+#          platforms: linux/amd64,linux/arm64
           context: .
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      # Sign the resulting Docker image digest except on PRs.
+      # This will only write to the public Rekor transparency log when the Docker
+      # repository is public to avoid leaking data.  If you would like to publish
+      # transparency data even for private images, pass --force to cosign below.
+      # https://github.com/sigstore/cosign
+#      - name: Sign the published Docker image
+#        if: ${{ github.event_name != 'pull_request' }}
+#        env:
+#          # https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#using-an-intermediate-environment-variable
+#          TAGS: ${{ steps.meta.outputs.tags }}
+#          DIGEST: ${{ steps.build-and-push.outputs.digest }}
+#          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
+#          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+#        # This step uses the identity token to provision an ephemeral certificate
+#        # against the sigstore community Fulcio instance.
+#        run: |
+#          images=""
+#          for tag in ${TAGS}; do
+#            images+="${tag}@${DIGEST} "
+#          done
+#          cosign sign --yes --key env://COSIGN_PRIVATE_KEY ${images}
+
+#      - name: Sign the images with GitHub OIDC Token
+#        env:
+#            DIGEST: ${{ steps.build-and-push.outputs.digest }}
+#            TAGS: ${{ steps.meta.outputs.tags }}
+#        run: |
+#          images=""
+#          for tag in ${TAGS}; do
+#            images+="${tag}@${DIGEST} "
+#          done
+#          cosign sign --yes ${images}
 
       # Sign the resulting Docker image digest except on PRs.
       # This will only write to the public Rekor transparency log when the Docker
