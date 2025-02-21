@@ -25,16 +25,16 @@ jobs:
     # https://docs.github.com/en/actions/using-github-hosted-runners/using-github-hosted-runners/about-github-hosted-runners
     # The Github CI multi-platform docs also include some useful boilerplate
     # https://docs.docker.com/build/ci/github-actions/multi-platform/
-    runs-on: ${{ matrix.runner }}
-    strategy:
-        matrix:
-          platform: [ linux/amd64, linux/arm64 ]
-          include:
-            - platform: linux/amd64
-              runner: ubuntu-latest
-            - platform: linux/arm64
-              runner: ubuntu-24.04-arm
-#    runs-on: ubuntu-latest
+#    runs-on: ${{ matrix.runner }}
+#    strategy:
+#        matrix:
+#          platform: [ linux/amd64, linux/arm64 ]
+#          include:
+#            - platform: linux/amd64
+#              runner: ubuntu-latest
+#            - platform: linux/arm64
+#              runner: ubuntu-24.04-arm
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
@@ -54,10 +54,10 @@ jobs:
         if: github.event_name != 'pull_request'
         uses: sigstore/cosign-installer@v3.8.1
 
-#      - # Add support for more platforms with QEMU (optional)
-#        # https://github.com/docker/setup-qemu-action
-#        name: Set up QEMU
-#        uses: docker/setup-qemu-action@v3.4.0
+      # Add support for more platforms with QEMU (optional)
+      # https://github.com/docker/setup-qemu-action
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3.4.0
 
       # Set up BuildKit Docker container builder to be able to build
       # multi-platform images and export cache
@@ -89,7 +89,7 @@ jobs:
         id: build-and-push
         uses: docker/build-push-action@v6.14.0
         with:
-          platforms: ${{ matrix.platform }}
+          platforms: linux/amd64,linux/arm64
           context: .
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
@@ -102,22 +102,22 @@ jobs:
       # repository is public to avoid leaking data.  If you would like to publish
       # transparency data even for private images, pass --force to cosign below.
       # https://github.com/sigstore/cosign
-      - name: Sign the published Docker image
-        if: ${{ github.event_name != 'pull_request' }}
-        env:
-          # https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#using-an-intermediate-environment-variable
-          TAGS: ${{ steps.meta.outputs.tags }}
-          DIGEST: ${{ steps.build-and-push.outputs.digest }}
-          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
-          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
-        # This step uses the identity token to provision an ephemeral certificate
-        # against the sigstore community Fulcio instance.
-        run: |
-          images=""
-          for tag in ${TAGS}; do
-            images+="${tag}@${DIGEST} "
-          done
-          cosign sign --yes --key env://COSIGN_PRIVATE_KEY ${images}
+#      - name: Sign the published Docker image
+#        if: ${{ github.event_name != 'pull_request' }}
+#        env:
+#          # https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#using-an-intermediate-environment-variable
+#          TAGS: ${{ steps.meta.outputs.tags }}
+#          DIGEST: ${{ steps.build-and-push.outputs.digest }}
+#          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
+#          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+#        # This step uses the identity token to provision an ephemeral certificate
+#        # against the sigstore community Fulcio instance.
+#        run: |
+#          images=""
+#          for tag in ${TAGS}; do
+#            images+="${tag}@${DIGEST} "
+#          done
+#          cosign sign --yes --key env://COSIGN_PRIVATE_KEY ${images}
 
       - name: Sign the images with GitHub OIDC Token
         env:
