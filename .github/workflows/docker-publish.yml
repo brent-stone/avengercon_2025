@@ -56,8 +56,11 @@ jobs:
 
       # Add support for more platforms with QEMU (optional)
       # https://github.com/docker/setup-qemu-action
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3.4.0
+      # NOTE: As of 21FEb25, the QEMU emulation runs into a seg fault when installing apt-get dependencies.
+      # This is possibly an out of memory issue on the VM
+      # For now, just manually push ARM images to dockerhub
+#      - name: Set up QEMU
+#        uses: docker/setup-qemu-action@v3.4.0
 
       # Set up BuildKit Docker container builder to be able to build
       # multi-platform images and export cache
@@ -89,7 +92,7 @@ jobs:
         id: build-and-push
         uses: docker/build-push-action@v6.14.0
         with:
-          platforms: linux/amd64,linux/arm64
+#          platforms: linux/amd64,linux/arm64
           context: .
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
@@ -119,13 +122,28 @@ jobs:
 #          done
 #          cosign sign --yes --key env://COSIGN_PRIVATE_KEY ${images}
 
-      - name: Sign the images with GitHub OIDC Token
+#      - name: Sign the images with GitHub OIDC Token
+#        env:
+#            DIGEST: ${{ steps.build-and-push.outputs.digest }}
+#            TAGS: ${{ steps.meta.outputs.tags }}
+#        run: |
+#          images=""
+#          for tag in ${TAGS}; do
+#            images+="${tag}@${DIGEST} "
+#          done
+#          cosign sign --yes ${images}
+
+      # Sign the resulting Docker image digest except on PRs.
+      # This will only write to the public Rekor transparency log when the Docker
+      # repository is public to avoid leaking data.  If you would like to publish
+      # transparency data even for private images, pass --force to cosign below.
+      # https://github.com/sigstore/cosign
+      - name: Sign the published Docker image
+        if: ${{ github.event_name != 'pull_request' }}
         env:
-            DIGEST: ${{ steps.build-and-push.outputs.digest }}
-            TAGS: ${{ steps.meta.outputs.tags }}
-        run: |
-          images=""
-          for tag in ${TAGS}; do
-            images+="${tag}@${DIGEST} "
-          done
-          cosign sign --yes ${images}
+          # https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#using-an-intermediate-environment-variable
+          TAGS: ${{ steps.meta.outputs.tags }}
+          DIGEST: ${{ steps.build-and-push.outputs.digest }}
+        # This step uses the identity token to provision an ephemeral certificate
+        # against the sigstore community Fulcio instance.
+        run: echo "${TAGS}" | xargs -I {} cosign sign --yes {}@${DIGEST}
