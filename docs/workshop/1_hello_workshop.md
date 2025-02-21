@@ -7,6 +7,21 @@ get our developer environment setup?
 
 ![Take This](1_images/take_this.png)
 
+RUNNING NOTES:
+1. Understand which architecture and use the appropriate flag for run_dev_desktop.sh
+   2. Nothing for x86/Intel/AMD processors
+   3. -m for ARM processors like Mac M1, M2, M3
+4. After the dev desktop loads first time, confirm login via browser
+5. Re-run dev container but with bind mount uncommented for appropriate architecture
+6. Once in dev container, run the kasm-ubuntu-python-final-setup.sh script
+7. Manually copy-paste the bash PATH updates from the script
+8. Verify python --version and poetry --version work in VSCode terminal
+9. Add VSCode Python extension
+10. Activate poetry venv in terminal `poetry env activate` -> `source....` copy paste
+11. CMD+SHIFT+P or Command+Shift+P --> Python: Select Interpreter -> select the `./.venv/...`
+12. 
+
+
 You'll need the following software installed to begin:
 
 1. [Docker](https://docs.docker.com/engine/install/)
