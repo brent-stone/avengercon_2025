@@ -43,4 +43,24 @@ fi
 # Remove containers for services not defined in the Compose file.
 # Remove named volumes declared in the volumes section of the Compose file and anonymous
 # volumes attached to containers.
-docker compose -f docker-compose-dev-container.yaml down --remove-orphans --volumes
+while getopts 'mlh' opt; do
+  echo "Access the dev desktop at https://localhost:6901";
+  case "${opt}" in
+    h)
+      echo "Default AMD64 (e.g. intel, AMD) dev desktop image. -m uses an ARM based dev desktop (e.g. Mac M series), -l for locally built dev desktop"
+      ;;
+    m)
+      echo "Cleaning up ARM architecture dev desktop volume and container."
+      docker compose -f docker-compose-dev-container.arm64.yaml down --remove-orphans --volumes
+      ;;
+    l)
+      echo "Cleaning up locally built dev desktop volume and container"
+      docker compose -f docker-compose-dev-container.local-build.yaml down --remove-orphans --volumes
+      ;;
+    ?)
+      echo "Cleaning up AMD64 architecture dev desktop volume and container."
+      docker compose -f docker-compose-dev-container..amd64.yaml down --remove-orphans --volumes
+      ;;
+  esac
+done
+
