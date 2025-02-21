@@ -12,17 +12,17 @@ while getopts 'mlh' opt; do
       ;;
     m)
       echo "Using an ARM architecture dev desktop image."
-      docker compose -f docker-compose-dev-container.arm64.yaml down --remove-orphans
+      docker compose -f docker-compose-dev-container.arm64.yaml down
       docker compose -f docker-compose-dev-container.arm64.yaml up --build
       ;;
     l)
       echo "Locally building dev desktop image. It's recommended to use a pre-built option with -m or no flag"
-      docker compose -f docker-compose-dev-container.local-build.yaml down --remove-orphans
+      docker compose -f docker-compose-dev-container.local-build.yaml down
       docker compose -f docker-compose-dev-container.local-build.yaml up --build
       ;;
     ?)
       echo "Using an AMD64 architecture dev desktop image."
-      docker compose -f docker-compose-dev-container.amd64.yaml down --remove-orphans
+      docker compose -f docker-compose-dev-container.amd64.yaml down
       docker compose -f docker-compose-dev-container.amd64.yaml up --build
       ;;
   esac
