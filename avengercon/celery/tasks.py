@@ -13,6 +13,6 @@ def hello_avengercon() -> str:
     Returns: Nothing but logs a notice
 
     """
-    l_response: str = "Hello, AvengerCon! <3 Celery"
+    l_response: str = "Hello, Avengercon! <3 Celery"
     logger.info(l_response)
     return l_response
