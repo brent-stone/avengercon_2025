@@ -19,7 +19,7 @@ RUNNING NOTES:
 9. Add VSCode Python extension
 10. Activate poetry venv in terminal `poetry env activate` -> `source....` copy paste
 11. CMD+SHIFT+P or Command+Shift+P --> Python: Select Interpreter -> select the `./.venv/...`
-12. 
+12.
 
 
 You'll need the following software installed to begin:

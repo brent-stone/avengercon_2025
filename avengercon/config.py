@@ -10,6 +10,7 @@ from sys import exit
 
 from avengercon.logger import logger
 
+
 class AvengerconConfig(BaseSettings):
     """
     Shared Pydantic parser for environment variables used throughout the backend.

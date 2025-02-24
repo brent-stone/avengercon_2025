@@ -8,7 +8,7 @@ GREEN="\e[32m"
 BLUE="\e[34m"
 ENDCOLOR="\e[0m"
 
-# Export all current .env values. Passwords and secrets will be re-used so that Postgres
+# Export all current .env values. Passwords and secrets will be reused so that Postgres
 # and other stateful containers don't need to be wiped because new passwords/secrets were
 # generated
 if [ -f ".env" ]; then

@@ -33,10 +33,10 @@ This is a hands-on Python programming workshop. At least one year of recent Pyth
 experience, some experience with Docker, and a computer you administer is strongly
 recommended.
 
-Python's great power is rapid and comprehensible data analysis feeding tools like 
-business intelligence (BI) dashboards and artificial intelligence (AI) models that help 
-organizations make data-driven decisions. This workshop will prepare you to transition 
-from initial (and likely haphazard) data analysis into understandable, scalable, and 
-automated best practices for getting data into a place and format that provides value. 
-Pydantic, Celery, and Dask will be covered with data input and output to a local MinIO 
+Python's great power is rapid and comprehensible data analysis feeding tools like
+business intelligence (BI) dashboards and artificial intelligence (AI) models that help
+organizations make data-driven decisions. This workshop will prepare you to transition
+from initial (and likely haphazard) data analysis into understandable, scalable, and
+automated best practices for getting data into a place and format that provides value.
+Pydantic, Celery, and Dask will be covered with data input and output to a local MinIO
 S3 bucket.

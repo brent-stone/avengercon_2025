@@ -56,10 +56,11 @@ def create_buckets(a_bucket_names: Iterable[str]) -> BucketCreationResult:
                 l_result.success.append(l_name)
         except S3Error as e:
             l_result.failure.append(l_name)
-            logger.warning(f"Ensure the requested bucket name '{l_name}' complies with AWS S3 naming conventions: https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html {e}")
+            logger.warning(
+                f"Ensure the requested bucket name '{l_name}' complies with AWS S3 naming conventions: https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html {e}",
+            )
         except (MinioException, MaxRetryError, ValueError) as e:
             l_result.failure.append(l_name)
-            e.add_note()
             logger.warning(e)
     return l_result
 

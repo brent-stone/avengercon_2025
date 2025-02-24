@@ -85,50 +85,29 @@ services:
       # Add a basic IP whitelist middleware to provide a minimal amount of protection to localhost HTTP
       - "traefik.http.middlewares.avengercon-http-whitelist.ipallowlist.sourcerange=10.0.0.0/8,192.168.0.0/16,172.16.0.0/12"
 
-#  redis:
-#    container_name: avengercon-redis
-#    image: redis/redis-stack:7.2.0-v8
-#    networks:
-#      - avengercon
-#    ports:
-#      - target: 6379  # Redis API
-#        mode: host
-#      - target: 8001  # Redis Insight UI
-#        mode: host
-#    environment:
-#      REDIS_ARGS: "--requirepass ${REDIS_PASSWORD:?missing .env file with REDIS_PASSWORD}"
-#    volumes:
-#      - type: volume
-#        source: redis-volume
-#        target: /db
-#    healthcheck:
-#      test: [ "CMD", "redis-cli", "ping" ]
-#      interval: 5s
-#      timeout: 30s
-#      retries: 10
-#    deploy:
-#      replicas: 1
-#      restart_policy:
-#        condition: on-failure
-#    labels:
-#      - traefik.enable=true
-#      - traefik.docker.network=avengercon
-#
-#      # Redis Insight webapp routing via traefik
-#      - traefik.http.services.avengercon-service-redis.loadBalancer.server.port=8001
-#      - traefik.http.services.avengercon-service-redis.loadBalancer.server.scheme=http
-#      - traefik.http.routers.avengercon-router-redis.entrypoints=avengercon-entrypoint-web
-#      - traefik.http.routers.avengercon-router-redis.rule=Host(`${SUBDOMAIN_CACHE}.${DOMAIN}`) && ${TRAEFIK_PRIVATE_IP_CLIENT_RULE}
-#      - traefik.http.routers.avengercon-router-redis.service=avengercon-service-redis
-#      - traefik.http.routers.avengercon-router-redis.tls=false
-#
-#      # Enable localhost direct TCP connection
-#      - traefik.tcp.services.avengercon-service-redis-tcp.loadBalancer.server.port=6379
-#      - traefik.tcp.routers.avengercon-router-redis-tcp.service=avengercon-service-redis-tcp
-#      - traefik.tcp.routers.avengercon-router-redis-tcp.entryPoints=avengercon-entrypoint-redis
-#      - traefik.tcp.routers.avengercon-router-redis-tcp.rule=HostSNI(`*`) && ${TRAEFIK_PRIVATE_IP_CLIENT_RULE}
-#      - traefik.tcp.routers.avengercon-router-redis-tcp.tls=false
-#
+  whoami:
+    container_name: avengercon-whoami
+    image: traefik/whoami
+    restart: always
+    ports:
+      - target: 80
+        mode: host
+    networks:
+      - avengercon
+    command:
+      - --name=avengercon_whoami
+      - --port=80
+      - --verbose
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=avengercon
+      - traefik.http.services.avengercon-service-whoami.loadBalancer.server.port=80
+      - traefik.http.services.avengercon-service-whoami.loadBalancer.server.scheme=http
+      - traefik.http.routers.avengercon-router-whoami.entrypoints=avengercon-entrypoint-web
+      - traefik.http.routers.avengercon-router-whoami.rule=Host(`${SUBDOMAIN_WHOAMI}.${DOMAIN}`) && ${TRAEFIK_PRIVATE_IP_CLIENT_RULE}
+      - traefik.http.routers.avengercon-router-whoami.service=avengercon-service-whoami
+      - traefik.http.routers.avengercon-router-whoami.tls=false
+
   minio:
     container_name: avengercon-minio
     image: minio/minio:RELEASE.2025-02-18T16-25-55Z
@@ -165,29 +144,51 @@ services:
       - traefik.tcp.routers.avengercon-router-minio-tcp.rule=HostSNI(`*`) && ${TRAEFIK_PRIVATE_IP_CLIENT_RULE}
       - traefik.tcp.routers.avengercon-router-minio-tcp.tls=false
 
-  whoami:
-    container_name: avengercon-whoami
-    image: traefik/whoami
-    restart: always
-    ports:
-      - target: 80
-        mode: host
+  redis:
+    container_name: avengercon-redis
+    image: redis/redis-stack:7.4.0-v3
     networks:
       - avengercon
-    command:
-      - --name=avengercon_whoami
-      - --port=80
-      - --verbose
+    ports:
+      - target: 6379  # Redis API
+        mode: host
+      - target: 8001  # Redis Insight UI
+        mode: host
+    environment:
+      REDIS_ARGS: "--requirepass ${REDIS_PASSWORD:?missing .env file with REDIS_PASSWORD}"
+    volumes:
+      - type: volume
+        source: redis-volume
+        target: /db
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 30s
+      retries: 10
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
     labels:
       - traefik.enable=true
       - traefik.docker.network=avengercon
-      - traefik.http.services.avengercon-service-whoami.loadBalancer.server.port=80
-      - traefik.http.services.avengercon-service-whoami.loadBalancer.server.scheme=http
-      - traefik.http.routers.avengercon-router-whoami.entrypoints=avengercon-entrypoint-web
-      - traefik.http.routers.avengercon-router-whoami.rule=Host(`${SUBDOMAIN_WHOAMI}.${DOMAIN}`) && ${TRAEFIK_PRIVATE_IP_CLIENT_RULE}
-      - traefik.http.routers.avengercon-router-whoami.service=avengercon-service-whoami
-      - traefik.http.routers.avengercon-router-whoami.tls=false
-#
+
+      # Redis Insight webapp routing via traefik
+      - traefik.http.services.avengercon-service-redis.loadBalancer.server.port=8001
+      - traefik.http.services.avengercon-service-redis.loadBalancer.server.scheme=http
+      - traefik.http.routers.avengercon-router-redis.entrypoints=avengercon-entrypoint-web
+      - traefik.http.routers.avengercon-router-redis.rule=Host(`${SUBDOMAIN_CACHE}.${DOMAIN}`) && ${TRAEFIK_PRIVATE_IP_CLIENT_RULE}
+      - traefik.http.routers.avengercon-router-redis.service=avengercon-service-redis
+      - traefik.http.routers.avengercon-router-redis.tls=false
+
+      # Enable localhost direct TCP connection
+      - traefik.tcp.services.avengercon-service-redis-tcp.loadBalancer.server.port=6379
+      - traefik.tcp.routers.avengercon-router-redis-tcp.service=avengercon-service-redis-tcp
+      - traefik.tcp.routers.avengercon-router-redis-tcp.entryPoints=avengercon-entrypoint-redis
+      - traefik.tcp.routers.avengercon-router-redis-tcp.rule=HostSNI(`*`) && ${TRAEFIK_PRIVATE_IP_CLIENT_RULE}
+      - traefik.tcp.routers.avengercon-router-redis-tcp.tls=false
+
+
 #  celery:
 #    container_name: avengercon-celery
 #    image: avengercon-celery

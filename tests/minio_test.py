@@ -1,6 +1,7 @@
 """
 Tests to verify the MinIO submodule is behaving well
 """
+
 import avengercon
 from pytest import fail
 from minio import Minio
@@ -17,7 +18,9 @@ def test_minio_client_connect() -> None:
     """
     l_client: Optional[Minio] = avengercon.minio.get_minio_client()
     if l_client is None:
-        fail("No minio client connected. Ensure the minio service is running via docker compose.")
+        fail(
+            "No minio client connected. Ensure the minio service is running via docker compose.",
+        )
     assert isinstance(l_client, Minio)
 
 
@@ -29,9 +32,9 @@ def test_minio_bucket_creation() -> None:
 
     """
     l_test_bucket: List[str] = ["test-bucket"]
-    l_result: avengercon.minio.schemas.BucketCreationResult = avengercon.minio.create_buckets(l_test_bucket)
+    l_result: avengercon.minio.schemas.BucketCreationResult = (
+        avengercon.minio.create_buckets(l_test_bucket)
+    )
     assert isinstance(l_result, BucketCreationResult)
     assert len(l_result.preexisting) + len(l_result.preexisting) >= 0
     assert len(l_result.failure) == 0
-
-
