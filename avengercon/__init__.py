@@ -10,7 +10,6 @@ from os import getenv
 
 from dotenv import find_dotenv
 from dotenv import load_dotenv
-import avengercon.minio
 
 _localhost_settings_filename: str = ".localhost.env"
 

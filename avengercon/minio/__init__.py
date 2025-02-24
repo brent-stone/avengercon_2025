@@ -6,7 +6,7 @@ from typing import Iterable, BinaryIO
 from typing import Optional
 
 from minio import Minio
-from minio.error import MinioException
+from minio.error import MinioException, S3Error
 from urllib3.exceptions import MaxRetryError
 
 from avengercon.logger import logger
@@ -54,8 +54,12 @@ def create_buckets(a_bucket_names: Iterable[str]) -> BucketCreationResult:
             else:
                 l_client.make_bucket(l_name)
                 l_result.success.append(l_name)
+        except S3Error as e:
+            l_result.failure.append(l_name)
+            logger.warning(f"Ensure the requested bucket name '{l_name}' complies with AWS S3 naming conventions: https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html {e}")
         except (MinioException, MaxRetryError, ValueError) as e:
             l_result.failure.append(l_name)
+            e.add_note()
             logger.warning(e)
     return l_result
 

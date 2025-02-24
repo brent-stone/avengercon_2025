@@ -28,7 +28,7 @@ def test_minio_bucket_creation() -> None:
     Returns: None
 
     """
-    l_test_bucket: List[str] = ["test_bucket"]
+    l_test_bucket: List[str] = ["test-bucket"]
     l_result: avengercon.minio.schemas.BucketCreationResult = avengercon.minio.create_buckets(l_test_bucket)
     assert isinstance(l_result, BucketCreationResult)
     assert len(l_result.preexisting) + len(l_result.preexisting) >= 0
