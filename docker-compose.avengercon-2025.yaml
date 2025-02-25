@@ -1,7 +1,4 @@
-x-avengercon-build: &avengercon-build
-  context: ./
-  dockerfile: DockerfileAvengercon
-  target: development
+
 
 services:
   traefik:
@@ -187,71 +184,6 @@ services:
       - traefik.tcp.routers.avengercon-router-redis-tcp.entryPoints=avengercon-entrypoint-redis
       - traefik.tcp.routers.avengercon-router-redis-tcp.rule=HostSNI(`*`) && ${TRAEFIK_PRIVATE_IP_CLIENT_RULE}
       - traefik.tcp.routers.avengercon-router-redis-tcp.tls=false
-
-  celery:
-    container_name: avengercon-celery
-    image: avengercon-celery
-    build: *avengercon-build
-    networks:
-      - avengercon
-    command:
-#      celery --app=avengercon.celery.celery_server worker --loglevel="${LOG_LEVEL}"
-#      --uid=nobody --gid=nogroup
-      # enable hot reload of celery workers and registered tasks via watchdog
-      watchmedo auto-restart --directory=/app/avengercon/celery --pattern=*.py --recursive
-      -- celery --app=avengercon.celery.celery_server worker --loglevel="${LOG_LEVEL}"
-      --uid=nobody --gid=nogroup
-    volumes:
-      # Mount local host's code into the container for 'live' development
-      # but only hot reload when changes to the Celery submodule is made
-      - ./avengercon/celery:/app/avengercon/celery
-    env_file:
-      - .env
-    restart: always
-    depends_on:
-      redis:
-        condition: service_healthy
-    healthcheck:
-      test: [ "CMD-SHELL", "celery inspect ping | grep 'pong'" ]
-      interval: 5s
-      timeout: 30s
-      retries: 10
-
-  flower:
-    container_name: avengercon-flower
-    image: avengercon-flower
-    command:
-      celery --app=avengercon.celery.celery_server flower --loglevel="${LOG_LEVEL}"
-    restart: always
-    ports:
-      - target: 5555
-        mode: host
-    networks:
-      - avengercon
-    build: *avengercon-build
-    env_file:
-      - .env
-    depends_on:
-      redis:
-        condition: service_healthy
-      celery:
-        condition: service_healthy
-    labels:
-      - traefik.enable=true
-      - traefik.docker.network=avengercon
-      - traefik.http.services.avengercon-service-flower.loadBalancer.server.port=5555
-      - traefik.http.services.avengercon-service-flower.loadBalancer.server.scheme=http
-      - traefik.http.routers.avengercon-router-flower.entrypoints=avengercon-entrypoint-web
-      - traefik.http.routers.avengercon-router-flower.rule=Host(`${SUBDOMAIN_FLOWER}.${DOMAIN}`) && ${TRAEFIK_PRIVATE_IP_CLIENT_RULE}
-      - traefik.http.routers.avengercon-router-flower.service=avengercon-service-flower
-      - traefik.http.routers.avengercon-router-flower.tls=false
-    healthcheck:
-      test: [ "CMD-SHELL",
-              "curl --fail --silent http://localhost:5555 || exit 1" ]
-      interval: 5s
-      timeout: 5s
-      retries: 3
-      start_period: 5s
 
 #
 #  prefect:
