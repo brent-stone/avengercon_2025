@@ -7,20 +7,6 @@ get our developer environment setup?
 
 ![Take This](1_images/take_this.png)
 
-RUNNING NOTES:
-1. Understand which architecture and use the appropriate flag for run_dev_desktop.sh
-   2. Nothing for x86/Intel/AMD processors
-   3. -m for ARM processors like Mac M1, M2, M3
-4. After the dev desktop loads first time, confirm login via browser
-5. Re-run dev container but with bind mount uncommented for appropriate architecture
-6. Once in dev container, run the kasm-ubuntu-python-final-setup.sh script
-7. Manually copy-paste the bash PATH updates from the script
-8. Verify python --version and poetry --version work in VSCode terminal
-9. Add VSCode Python extension
-10. Activate poetry venv in terminal `poetry env activate` -> `source....` copy paste
-11. CMD+SHIFT+P or Command+Shift+P --> Python: Select Interpreter -> select the `./.venv/...`
-12.
-
 !!! tip "Dev Environment Options"
     === "Local Python, Docker Services"
         This is the recommended way to participate in the workshop. It ensures you have gone through each step to prepare
@@ -55,11 +41,11 @@ RUNNING NOTES:
 
         ![Kasm Workspace](1_images/kasm_workspace.png)
 
-        :material-alert-circle-check:{ .green } After successfully loging in for the first time, stop the deployment with `ctrl+c` or `⌘-c`
-        in the terminal used to run the script. Then uncomment the following lines in the appropriate 
+        :material-alert-circle-check:{ .green } After successfully loging in for the first time, stop the deployment with
+        `ctrl+c` or `control-c` in the terminal used to run the script. Then uncomment the following lines in the appropriate 
         `docker-compose-dev-container.<architecture>.yaml` file to get a live sync of the workshop files inside the
         Kasm Workspace Ubuntu desktop. If you're using a visual IDE like VSCode or PyCharm, select the commented lines
-        and press `ctrl+/` or `⌘-/` to quickly uncomment.
+        and press `ctrl + /` or `⌘ + /` to quickly uncomment.
 
         ``` py linenums="1" hl_lines="18-21" title="docker-compose-dev-container.ARCHITECTURE.yaml"
         services:
@@ -91,6 +77,11 @@ RUNNING NOTES:
         With the updated docker-compose file, re-run `run_dev_desktop.sh` as before (don't forget any flags) and log
         back into the Kasm Workspace. You should now see an `avengercon_2025` folder in the Ubuntu desktop.
 
+        :material-flag-checkered: **Last Steps!**
+        
+        1. In Kasm Workspace, open a terminal and run the `kasm-ubuntu-python-final-setup.sh` script.
+        2. Verify `python --version` and `poetry --version` works in VSCode terminal
+        3. Add the Python VSCode extension
 
 You'll need the following software installed to begin:
 
@@ -124,8 +115,8 @@ You'll need the following software installed to begin:
 
 ### Install the `avengercon` package and dependencies
 
-1. Establish a virtual environment with `poetry env activate` or [use pip]
-   (https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/#create-and-use-virtual-environments)
+1. Establish a virtual environment with `poetry env activate` or [use pip](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/#create-and-use-virtual-environments)
+    - Look for an additional command Poetry recommends you run. It'll like start with `source ...`
 2. Install `avengercon` & dependencies with `poetry install` or [use pip](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/#using-a-requirements-file)
 3. Confirm that the local `avengercon` package is available in your virtual environment
 
@@ -141,8 +132,21 @@ most other popular Integrated Development Environment (IDEs) support intellisens
 other productivity boosters when properly configured to use the project's virtual
 environment.
 
+!!! tip "Configure IDE to use the Poetry virtual environment"
+
+    === ":material-microsoft-visual-studio-code: VSCode"
+        1. Open the VSCode Command Pallet with `cmd + shift + p` or `command + shift + p`
+        2. `Python: Select Interpreter`
+        3. Select the Python interpreter located in `./.venv/...`
+
+    === ":simple-pycharm: PyCharm"
+        1. PyCharm main menu > `Settings`
+        2. `Project: avengercon_2025` > `Python Interpreter`
+        3. `Add Local Interpreter` > `Select Existing`
+        4. **Type** `Poetry` > `Poetry env to use` > select the Python interpreter located in the `./.venv/bin` folder
+
 ### Generate your `.env` file
-Using a terminal from the top level `avengercon_2024` directory, run the
+Using a terminal from the top level `avengercon_2025` directory, run the
 `initialize_env.sh` script to dynamically generate configuration metadata in a `.env`
 file.
 
@@ -157,7 +161,7 @@ file.
     ./scripts/initialize_env.sh
     ```
 
-You should now see a `.env` file in your `avengercon_2024` directory that looks
+You should now see a `.env`, `.localhost.env`, and `.personal.env` files in your `avengercon_2025` directory that looks
 something like this:
 ``` toml title=".env"
 # Used by run_*.sh scripts & avengercon module to dynamically configure localhost
@@ -171,7 +175,7 @@ DOMAIN=localhost
 ```
 
 ## 🚀 **Launch!**
-Using a terminal from the top level `avengercon_2024` directory, launch the `docker
+Using a terminal from the top level `avengercon_2025` directory, launch the `docker
 compose` deployment using the `run_dev.sh` script.
 
 === "Windows"
@@ -258,43 +262,6 @@ approximation for "Stone")
     and `MINIO_ROOT_PASSWORD` values
 
     ![MinIO](1_images/minio.png)
-
-=== "Dask"
-    [Dask :simple-dask:](http://dask.localhost:57073/status){ .md-button .md-button--primary}
-
-    ![Dask](1_images/dask.png)
-
-=== "Dask Notebook"
-    [Jupyter Notebook :simple-jupyter:](http://notebook.localhost:57073/){ .md-button .md-button--primary}
-
-    Your login token will be listed in the terminal next to an `avengercon-dask-notebook`
-    log entry. You'll need to copy-paste just the token portion of the url
-
-    ``` terminal hl_lines="2"
-    avengercon-dask-notebook       | [... ServerApp] Jupyter Server 2.12.5 is running at:
-    avengercon-dask-notebook       | [... ServerApp] http://fd52fdf68911:8888/lab?token=b952e22de792f69923d281c04f66393518cd74a0c7fd1acf
-                                                EVERYTHING AFTER THE = IS YOUR TOKEN    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-    avengercon-dask-notebook       | [I 2024-02-17 19:42:45.576 ServerApp]     http://127.0.0.1:8888/lab?token=b952e22de792f69923d281c04f66393518cd74a0c7fd1acf
-    avengercon-dask-notebook       | [I 2024-02-17 19:42:45.576 ServerApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
-    ```
-
-    ![Jupyter](1_images/jupyter.png)
-
-=== "Prefect"
-    [Prefect :simple-prefect:](http://prefect.localhost:57073/dashboard){ .md-button .md-button--primary}
-
-    ![Prefect](1_images/prefect.png)
-
-=== "Celery (Flower)"
-    [Celery :simple-celery:](http://celery.localhost:57073/){ .md-button .md-button--primary}
-
-    ![Celery](1_images/celery.png)
-
-=== "Swagger (FastAPI)"
-    [FastAPI :simple-fastapi: + :simple-swagger:](http://api.localhost:57073/docs){ .md-button .md-button--primary}
-
-    ![Swagger (FastAPI)](1_images/swagger.png)
 
 === "Traefik"
     [Traefik :simple-traefikproxy:](http://proxy.localhost:57073/dashboard/#/){ .md-button .md-button--primary}

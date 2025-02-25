@@ -9,6 +9,10 @@ they were a single interpreter and DataFrame.
 The [Journey of a Task](https://distributed.dask.org/en/latest/journey.html) explanation
 by the Dask authors provides a nice end-to-end primer on how the framework operates.
 
+It is also worth noting that the [Ray](https://www.ray.io/) Python GPU acceleration framework is rapidly growing in
+popularity. It can be used as a standalone framework or in conjunction with Dask, Celery, Prefect, Airflow, and other 
+Python data engineering tools.
+
 ## What is Coiled and Prefect?
 Dask fits into a growing segment of the data/tech industry where Free and Open Source
 Software (FOSS) is provided with fully-managed and extended offerings made available by
@@ -20,42 +24,32 @@ expanded offering more geared towards [ETL pipelines](https://examples.dask.org/
 
 
 ## Dask created hands-on crash course
+[Dask :simple-dask:](http://dask.localhost:57073/status){ .md-button .md-button--primary}
+
+![Dask](1_images/dask.png)
 
 [Jupyter Notebook :simple-jupyter:](http://notebook.localhost:57073/){ .md-button .md-button--primary}
 
 Transition to the official crash-course running on your computer to get comfortable with
 the framework.
 
+![Jupyter](1_images/jupyter.png)
+
+Your login token will be listed in the terminal next to an `avengercon-dask-notebook` log entry. You'll need to 
+copy-paste just the token portion of the url
+
+``` terminal hl_lines="2"
+avengercon-dask-notebook       | [... ServerApp] Jupyter Server 2.12.5 is running at:
+avengercon-dask-notebook       | [... ServerApp] http://fd52fdf68911:8888/lab?token=b952e22de792f69923d281c04f66393518cd74a0c7fd1acf
+                                            EVERYTHING AFTER THE = IS YOUR TOKEN    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+avengercon-dask-notebook       | [I 2024-02-17 19:42:45.576 ServerApp]     http://127.0.0.1:8888/lab?token=b952e22de792f69923d281c04f66393518cd74a0c7fd1acf
+avengercon-dask-notebook       | [I 2024-02-17 19:42:45.576 ServerApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+```
+
+    
+
 ## Preparing for using Dask in your own projects
 
 Since we've already seen some basics of using Dask in the Jupyter notebooks, let's
 transition to a couple of tasks using Prefect.
-
-### Open the Prefect User Interface
-
-Right-click and "open in new tab"
-
-[Prefect :simple-prefect:](http://prefect.localhost:57073/dashboard){ .md-button .md-button--primary}
-
-### Integrating Prefect with AWS S3/MinIO
-
-In your IDE with your virtual environment activated ([as described earlier](1_hello_workshop.md)),
-try making and running a new python script in the `avengercon_2024` directory.
-
-``` py title="testing.py"
-from avengercon.prefect.flows import hello_prefect_flow
-from avengercon.prefect.storage import create_default_prefect_blocks, create_default_prefect_buckets
-
-print(hello_prefect_flow())
-create_default_prefect_buckets()
-create_default_prefect_blocks()
-```
-
-Take a look at the "Blocks" portion of the Prefect UI. You should see `prefect-artifacts`
-and `prefect-flows` as registered S3-like buckets. Clicking the link on either will
-show instructions on how to use these buckets in the future to cache both the files your
-team is working on and the code you're using to do so. This may be particularly helpful
-when your operators may want to trigger a pre-defined series of steps for new data by
-triggering a [deployment](https://docs.prefect.io/latest/concepts/deployments/) that
-uses a [flow](https://docs.prefect.io/latest/concepts/flows/) the dev team stored in a
-block.
