@@ -150,6 +150,9 @@ cython_debug/
 # PyCharm IDE
 .idea/*
 
+# Mac Stuff
+.DS_Store
+
 # Other stuff
 *.p
 .vscode/

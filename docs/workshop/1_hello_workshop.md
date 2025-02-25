@@ -21,13 +21,82 @@ RUNNING NOTES:
 11. CMD+SHIFT+P or Command+Shift+P --> Python: Select Interpreter -> select the `./.venv/...`
 12.
 
+!!! tip "Dev Environment Options"
+    === "Local Python, Docker Services"
+        This is the recommended way to participate in the workshop. It ensures you have gone through each step to prepare
+        your local dev environment to rapidly work with different python versions (via `pyenv`) and build, test, and
+        publish python wheels using `poetry`.
+
+
+    === "Docker Only"
+        For those who don't want to make any adjustments to their local dev environment beyond running Docker containers,
+        a Kasm Workspace with Ubuntu 22.04 Jammy Jellyfish and Python 3.13 is provided.
+
+        For those on a Unix operating system:
+            ```bash
+            chmod +x ./run_dev_desktop.sh
+            ./run_dev_desktop.sh <flag>
+            ```
+
+        For those on a Windows operating system with [Windows Subsystem for Linux (WSL) enabled](https://learn.microsoft.com/en-us/windows/wsl/install):
+            ```bash
+            bash run_dev_desktop.sh <flag>
+            ```
+
+        For those on an x86/AMD64 architecture CPU (Intel, AMD, etc.), running `run_dev_desktop.sh` without a flag will
+        pull the right image from GitHub. For those on an ARM architecture CPU (Mac M1, etc.), use the `-m` flag to pull
+        an ARM compiled workspace from Docker Hub. If neither options work, use the `-l` flag to locally build the image.
+        Please note that locally building the image may take several minutes to download and build.
+
+        The Kasm Workspace is accessible at [https://localhost:6901/](https://localhost:6901/)
+
+        **username**: kasm_user </br>
+        **password**: avengercon-2025
+
+        ![Kasm Workspace](1_images/kasm_workspace.png)
+
+        :material-alert-circle-check:{ .green } After successfully loging in for the first time, stop the deployment with `ctrl+c` or `⌘-c`
+        in the terminal used to run the script. Then uncomment the following lines in the appropriate 
+        `docker-compose-dev-container.<architecture>.yaml` file to get a live sync of the workshop files inside the
+        Kasm Workspace Ubuntu desktop. If you're using a visual IDE like VSCode or PyCharm, select the commented lines
+        and press `ctrl+/` or `⌘-/` to quickly uncomment.
+
+        ``` py linenums="1" hl_lines="18-21" title="docker-compose-dev-container.ARCHITECTURE.yaml"
+        services:
+          kasm:
+            container_name: kasm-ubuntu-desktop
+            image: brentstone/kasm-ubuntu-desktop:0.2025.1-arm
+            ports:
+              - target: 6901
+                published: 6901
+                mode: host
+            networks:
+              - avengercon-dev-desktop
+            volumes:
+              - type: volume
+                source: kasm-ubuntu-volume
+                target: /home/kasm-user
+                read_only: false
+              # Uncomment after initial build/run of the container to enable real-time synchronization between localhost and
+              # in container workshop files
+        #      - type: bind
+        #        source: ./
+        #        target: /home/kasm-user/Desktop/avengercon_2025/
+        #        read_only: false
+            environment:
+              # username is kasm_user
+              VNC_PW: avengercon-2025
+        ```
+
+        With the updated docker-compose file, re-run `run_dev_desktop.sh` as before (don't forget any flags) and log
+        back into the Kasm Workspace. You should now see an `avengercon_2025` folder in the Ubuntu desktop.
+
 
 You'll need the following software installed to begin:
 
 1. [Docker](https://docs.docker.com/engine/install/)
-2. [Python 3.11](https://www.python.org/downloads/)
+2. [Python 3.13](https://www.python.org/downloads/)
 3. [Git](https://git-scm.com/downloads)
-4. [Rust](https://rustup.rs/)
 
 !!! note "Optional software"
     === "Python interpreter manager"
