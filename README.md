@@ -37,8 +37,9 @@ Tooling </br>
 
 **Workshop Date**: 26 February 2025
 
-The [Avenercon IX conference](https://avengercon.com/)
-homepage has details about the event where this workshop was held.
+[![Workshop Documentation](docs/workshop/start_here.jpeg)](https://brent-stone.github.io/avengercon_2025/)
+
+The [Avenercon IX conference](https://avengercon.com/) homepage has details about the event where this workshop was held.
 
 ---
 This is a hands-on Python programming workshop. At least one year of recent Python
