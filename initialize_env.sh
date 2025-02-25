@@ -36,6 +36,7 @@ rando_jupyter_token() {
 # Output filenames
 ENV_FILE="./.env"
 LOCALHOST_ENV_FILE="./.localhost.env"
+PERSONAL_ENV_FILE="./.personal.env"
 
 # Top Level Domain (TLS) the services are hosted under: e.g. 'localhost' or "tld.com"
 HTTP_PORT="57073"
@@ -223,7 +224,7 @@ else
   } >> $ENV_FILE
 fi
 
-# Check if .env file already exists
+# Check if .localhost.env file already exists
 if [ -f $LOCALHOST_ENV_FILE ]; then
   echo -e "${YELLOW}$LOCALHOST_ENV_FILE file already exists${NO_COLOR}. To reset, remove \
 it then re-run this script."
@@ -299,4 +300,20 @@ else
     echo "PREFECT_MINIO_FLOWS_BUCKET_NAME=${PREFECT_MINIO_FLOWS_BUCKET_NAME}";
     echo "PREFECT_MINIO_ARTIFACTS_BUCKET_NAME=${PREFECT_MINIO_ARTIFACTS_BUCKET_NAME}";
   } >> $LOCALHOST_ENV_FILE
+fi
+
+# Check if .personal.env file already exists
+if [ -f $PERSONAL_ENV_FILE ]; then
+  echo -e "${YELLOW}$PERSONAL_ENV_FILE file already exists${NO_COLOR}. To reset, remove \
+it then re-run this script."
+# If not, initialize it with new key:value pairs
+else
+  # Create the .env file
+  touch $PERSONAL_ENV_FILE
+
+  # Write to the file
+  {
+    echo "# Used to store keys and configs related to personal accounts (e.g. Safety API, cloudflare, etc.)";
+    echo "SAFETY_API_KEY=CHANGE-ME";
+  } >> $PERSONAL_ENV_FILE
 fi

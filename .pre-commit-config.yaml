@@ -5,16 +5,16 @@ fail_fast: true
 repos:
     # Using this mirror lets us use mypyc-compiled black, which is about 2x faster
     - repo: https://github.com/psf/black-pre-commit-mirror
-      rev: 24.2.0
+      rev: 25.1.0
       hooks:
           - id: black
             # It is recommended to specify the latest version of Python
             # supported by your project here, or alternatively use
             # pre-commit's default_language_version, see
             # https://pre-commit.com/#top_level-default_language_version
-            language_version: python3.11
+            language_version: python3.13
     -   repo: https://github.com/pre-commit/pre-commit-hooks
-        rev: v4.5.0
+        rev: v5.0.0
         hooks:
         -   id: end-of-file-fixer
             files: ^.idea/
@@ -47,7 +47,7 @@ repos:
         -   id: add-trailing-comma
             args: [--py35-plus]
     - repo: https://github.com/codespell-project/codespell
-      rev: v2.2.6
+      rev: v2.4.1
       hooks:
       - id: codespell
         args:
@@ -57,7 +57,7 @@ repos:
         exclude: '^.idea|^.venv|^.tox|^scripts'
         exclude_types: [javascript]
     -   repo: https://github.com/PyCQA/bandit
-        rev: 1.7.7
+        rev: 1.8.3
         hooks:
         -   id: bandit
             language_version: python3
@@ -65,4 +65,4 @@ repos:
             args:
             -   -s
             -   B101,B104
-exclude: '(site|.tox|.venv|.pytest_cache)/.*'
+exclude: '(site|.tox|.venv|.idea|.github|.pytest_cache)/.*'

@@ -6,7 +6,7 @@ repo_url: https://github.com/brent-stone/avengercon_2025
 edit_uri: edit/main/docs/
 
 watch:
-  - src/avengercon
+  - avengercon
 
 extra_css:
   - stylesheets/extra.css
@@ -51,10 +51,16 @@ nav:
   - Home: index.md
   - Workshop:
     - Hello, Workshop!: workshop/1_hello_workshop.md
-    - Parallel Pros and Cons: workshop/2_pros_cons.md
-    - Dask: workshop/3_dask.md
-    - Celery & Flower: workshop/4_celery.md
-    - Apache Beam: workshop/5_beam.md
+    - Data Engineering Primer: workshop/2_data_engineering_primer.md
+    - Pandas with Extras: workshop/3_pandas.md
+    - Pydantic: workshop/4_pydantic.md
+    - Regular Expressions: workshop/5_regex.md
+    - Python Packages and Wheels: workshop/6_python_wheels.md
+    - Dask: workshop/7_dask.md
+    - Celery & Flower: workshop/8_celery.md
+    - Prefect & Airflow: workshop/9_prefect_airflow.md
+    - ORMs and DBT: workshop/10_ORM_DBT.md
+    - Apache Beam: workshop/11_beam.md
   - Other Information:
       - Cloudflare: developers/cloudflare.md
       - Docker: developers/docker.md

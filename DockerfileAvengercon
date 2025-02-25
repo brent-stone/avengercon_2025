@@ -1,4 +1,4 @@
-FROM python:3.11-slim as requirements
+FROM python:3.13-slim AS requirements
 
 WORKDIR /tmp
 RUN mkdir -p requirements
@@ -10,20 +10,38 @@ COPY ./scripts/export_poetry_to_req_txt.sh export_poetry_to_req_txt.sh
 RUN chmod +x export_poetry_to_req_txt.sh
 RUN ./export_poetry_to_req_txt.sh
 
-FROM python:3.11-slim as base
+FROM python:3.13-slim AS base
 
 # Ensure curl is available for healthcheck via curl
 # The additional packages are to support compiling google-re python wheel with the C++
 # library
 # https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#run
 # "Always combine RUN apt-get update with apt-get install in the same RUN statement."
-RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends \
-    curl
+#RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends \
+#    curl
 #    gcc \
 #    g++ \
 #    libre2-dev \
 #    libpq-dev
     # Add additional installations here with trailing `\` on each line \
+
+RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends \
+    curl \
+    build-essential
+#    gcc\
+#    g++
+#    libssl-dev \
+#    libffi-dev \
+#    python3-dev \
+#    cargo \
+#    pkg-config
+
+# Install Rust (pendulum, pydantic, and other Python packages are leveraging Rust now)
+# https://rustup.rs/#
+#RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && echo "installed rust"
+#RUN . "$HOME/.cargo/env" && echo "rust added to current shell"
+
+#ENV PATH="$HOME/.cargo/bin:$PATH"
 
 # Cleanup the apt cache to reduce image size
 RUN apt-get purge -y --auto-remove
@@ -35,26 +53,21 @@ ENV PYTHONPATH=./
 
 EXPOSE 8883
 
-FROM base as development
+FROM base AS development
 LABEL maintainer="Brent Stone <brent.j.stone2.mil@army.mil>"
 
 WORKDIR /app
 COPY --from=requirements /tmp/requirements/requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 
-COPY ./entrypoints/start-reload.sh start-reload.sh
-RUN chmod +x start-reload.sh
-
-COPY ./entrypoints/prestart.sh prestart.sh
-RUN chmod +x prestart.sh
-
+COPY ./LICENSE LICENSE
 COPY ./README.md README.md
 COPY ./pyproject.toml pyproject.toml
 COPY ./avengercon avengercon
 
 RUN pip install /app
 
-FROM development as production
+FROM development AS production
 
 # Remove pip's cache to reduce final image size
 # https://pip.pypa.io/en/stable/topics/caching/#avoiding-caching

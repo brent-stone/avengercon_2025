@@ -6,6 +6,6 @@ export DOCKER_BUILDKIT=1
 
 # Networks and other thing from a previous run may still be around
 # This ensures a relatively clean slate
-docker compose down --remove-orphans
+docker compose -f docker-compose.avengercon-2025.yaml down
 
-docker compose -f docker-compose.yaml up --build
+docker compose -f docker-compose.avengercon-2025.yaml up --build

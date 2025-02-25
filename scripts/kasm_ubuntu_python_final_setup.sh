@@ -2,9 +2,9 @@
 # exit immediately upon error
 set -e
 
-export PYENV_ROOT="$HOME/.pyenv"
-[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init - bash)"
+echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc
+echo '[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc
+echo 'eval "$(pyenv init - bash)"' >> ~/.bashrc
 
 echo python --version
 
@@ -13,7 +13,7 @@ echo python --version
 curl -sSL https://install.python-poetry.org | python -
 
 # Add Poetry to current shell path
-export PATH="/home/kasm-user/.local/bin:$PATH"
+echo 'export PATH="/home/kasm-user/.local/bin:$PATH"' >> ~/.bashrc
 
 ## Debugging sanity check
 poetry --version

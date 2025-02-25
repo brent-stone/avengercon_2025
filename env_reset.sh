@@ -8,7 +8,7 @@ GREEN="\e[32m"
 BLUE="\e[34m"
 ENDCOLOR="\e[0m"
 
-# Export all current .env values. Passwords and secrets will be re-used so that Postgres
+# Export all current .env values. Passwords and secrets will be reused so that Postgres
 # and other stateful containers don't need to be wiped because new passwords/secrets were
 # generated
 if [ -f ".env" ]; then
@@ -35,7 +35,6 @@ fi
 declare -a PathArray=(
   ".env" \
   ".localhost.env" \
-  ".cloudflare.env" \
 )
 # Iterate over the paths and remove the files if present
 # The [@] operator is get all elements, space-separated
@@ -47,7 +46,3 @@ done
 
 # Run the .env and key initialization script
 /bin/bash ./initialize_env.sh
-
-# Stop any currently running containers for this project.
-# Remove containers for services not defined in the Compose file.
-docker compose down --remove-orphans

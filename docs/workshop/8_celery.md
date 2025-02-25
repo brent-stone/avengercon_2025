@@ -18,6 +18,8 @@ _right click and "open in new tab"_
 
 [Celery :simple-celery:](http://celery.localhost:57073/){ .md-button .md-button--primary}
 
+![Celery](1_images/celery.png)
+
 Flower is a companion project for Celery to provide a GUI for the scheduler similar to
 what we saw with Dask and Prefect (albeit not as pretty).
 

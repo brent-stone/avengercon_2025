@@ -1,12 +1,9 @@
-x-avengercon-build: &avengercon-build
-  context: ./
-  dockerfile: DockerfileAvengercon
-  target: development
+
 
 services:
   traefik:
     container_name: avengercon-proxy
-    image: traefik:3.0
+    image: traefik:3
     restart: always
     networks:
       - avengercon
@@ -17,7 +14,7 @@ services:
       # - ./traefik/data:/config
     ports:
       # Note: It's recommended to use a service like Let's Encrypt or Cloudflare Tunnels
-      # to serve all web traffic through HTTPS. Then, split up this docker-compose.avengercon-2025.yaml
+      # to serve all web traffic through HTTPS. Then, split up this docker-compose.yaml
       # into a 2nd docker-compose.override.yaml for development which holds the direct
       # port exposures of sensitive services like Redis and MinIO APIs. Then remove them
       # from this file so 'prod' deployments don't directly expose the APIs.
@@ -85,9 +82,68 @@ services:
       # Add a basic IP whitelist middleware to provide a minimal amount of protection to localhost HTTP
       - "traefik.http.middlewares.avengercon-http-whitelist.ipallowlist.sourcerange=10.0.0.0/8,192.168.0.0/16,172.16.0.0/12"
 
+  whoami:
+    container_name: avengercon-whoami
+    image: traefik/whoami
+    restart: always
+    ports:
+      - target: 80
+        mode: host
+    networks:
+      - avengercon
+    command:
+      - --name=avengercon_whoami
+      - --port=80
+      - --verbose
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=avengercon
+      - traefik.http.services.avengercon-service-whoami.loadBalancer.server.port=80
+      - traefik.http.services.avengercon-service-whoami.loadBalancer.server.scheme=http
+      - traefik.http.routers.avengercon-router-whoami.entrypoints=avengercon-entrypoint-web
+      - traefik.http.routers.avengercon-router-whoami.rule=Host(`${SUBDOMAIN_WHOAMI}.${DOMAIN}`) && ${TRAEFIK_PRIVATE_IP_CLIENT_RULE}
+      - traefik.http.routers.avengercon-router-whoami.service=avengercon-service-whoami
+      - traefik.http.routers.avengercon-router-whoami.tls=false
+
+  minio:
+    container_name: avengercon-minio
+    image: minio/minio:RELEASE.2025-02-18T16-25-55Z
+    command: server --address ":9000" --console-address ":9090" /data
+    volumes:
+      - minio-volume:/data
+    networks:
+      - avengercon
+    ports:
+      - target: 9000  # MinIO API
+        mode: host
+      - target: 9090  # MinIO webapp
+        mode: host
+    environment:
+      # https://min.io/docs/minio/linux/reference/minio-server/settings.html
+      MINIO_ROOT_USER: "${MINIO_ROOT_USER:?missing .env file with MINIO_ROOT_USER}"
+      MINIO_ROOT_PASSWORD: "${MINIO_ROOT_PASSWORD:?missing .env file with MINIO_ROOT_PASSWORD}"
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=avengercon
+
+      # MinIO console webapp via traefik
+      - traefik.http.services.avengercon-service-minio.loadBalancer.server.port=9090
+      - traefik.http.services.avengercon-service-minio.loadBalancer.server.scheme=http
+      - traefik.http.routers.avengercon-router-minio.entrypoints=avengercon-entrypoint-web
+      - traefik.http.routers.avengercon-router-minio.rule=Host(`${SUBDOMAIN_MINIO}.localhost`)
+      - traefik.http.routers.avengercon-router-minio.service=avengercon-service-minio
+      - traefik.http.routers.avengercon-router-minio.tls=false
+
+      # Enable localhost direct TCP connection
+      - traefik.tcp.services.avengercon-service-minio-tcp.loadBalancer.server.port=9000
+      - traefik.tcp.routers.avengercon-router-minio-tcp.service=avengercon-service-minio-tcp
+      - traefik.tcp.routers.avengercon-router-minio-tcp.entryPoints=avengercon-entrypoint-minio
+      - traefik.tcp.routers.avengercon-router-minio-tcp.rule=HostSNI(`*`) && ${TRAEFIK_PRIVATE_IP_CLIENT_RULE}
+      - traefik.tcp.routers.avengercon-router-minio-tcp.tls=false
+
   redis:
     container_name: avengercon-redis
-    image: redis/redis-stack:7.2.0-v8
+    image: redis/redis-stack:7.4.0-v3
     networks:
       - avengercon
     ports:
@@ -129,275 +185,36 @@ services:
       - traefik.tcp.routers.avengercon-router-redis-tcp.rule=HostSNI(`*`) && ${TRAEFIK_PRIVATE_IP_CLIENT_RULE}
       - traefik.tcp.routers.avengercon-router-redis-tcp.tls=false
 
-  minio:
-    container_name: avengercon-minio
-    image: minio/minio:RELEASE.2024-02-13T15-35-11Z
-    command: server --address ":9000" --console-address ":9090" /data
-    volumes:
-      - minio-volume:/data
-    networks:
-      - avengercon
-    ports:
-      - target: 9000  # MinIO API
-        mode: host
-      - target: 9090  # MinIO webapp
-        mode: host
-    environment:
-      # https://min.io/docs/minio/linux/reference/minio-server/settings.html
-      MINIO_ROOT_USER: "${MINIO_ROOT_USER:?missing .env file with MINIO_ROOT_USER}"
-      MINIO_ROOT_PASSWORD: "${MINIO_ROOT_PASSWORD:?missing .env file with MINIO_ROOT_PASSWORD}"
-    labels:
-      - traefik.enable=true
-      - traefik.docker.network=avengercon
-
-      # MinIO console webapp via traefik
-      - traefik.http.services.avengercon-service-minio.loadBalancer.server.port=9090
-      - traefik.http.services.avengercon-service-minio.loadBalancer.server.scheme=http
-      - traefik.http.routers.avengercon-router-minio.entrypoints=avengercon-entrypoint-web
-      - traefik.http.routers.avengercon-router-minio.rule=Host(`${SUBDOMAIN_MINIO}.localhost`)
-      - traefik.http.routers.avengercon-router-minio.service=avengercon-service-minio
-      - traefik.http.routers.avengercon-router-minio.tls=false
-
-      # Enable localhost direct TCP connection
-      - traefik.tcp.services.avengercon-service-minio-tcp.loadBalancer.server.port=9000
-      - traefik.tcp.routers.avengercon-router-minio-tcp.service=avengercon-service-minio-tcp
-      - traefik.tcp.routers.avengercon-router-minio-tcp.entryPoints=avengercon-entrypoint-minio
-      - traefik.tcp.routers.avengercon-router-minio-tcp.rule=HostSNI(`*`) && ${TRAEFIK_PRIVATE_IP_CLIENT_RULE}
-      - traefik.tcp.routers.avengercon-router-minio-tcp.tls=false
-
-  whoami:
-    container_name: avengercon-whoami
-    image: traefik/whoami
-    restart: always
-    ports:
-      - target: 80
-        mode: host
-    networks:
-      - avengercon
-    command:
-      - --name=avengercon_whoami
-      - --port=80
-      - --verbose
-    labels:
-      - traefik.enable=true
-      - traefik.docker.network=avengercon
-      - traefik.http.services.avengercon-service-whoami.loadBalancer.server.port=80
-      - traefik.http.services.avengercon-service-whoami.loadBalancer.server.scheme=http
-      - traefik.http.routers.avengercon-router-whoami.entrypoints=avengercon-entrypoint-web
-      - traefik.http.routers.avengercon-router-whoami.rule=Host(`${SUBDOMAIN_WHOAMI}.${DOMAIN}`) && ${TRAEFIK_PRIVATE_IP_CLIENT_RULE}
-      - traefik.http.routers.avengercon-router-whoami.service=avengercon-service-whoami
-      - traefik.http.routers.avengercon-router-whoami.tls=false
-
-  celery:
-    container_name: avengercon-celery
-    image: avengercon-celery
-    build: *avengercon-build
-    networks:
-      - avengercon
-    command:
-#      celery --app=avengercon.celery.celery_server worker --loglevel="${LOG_LEVEL}"
-#      --uid=nobody --gid=nogroup
-      # enable hot reload of celery workers and registered tasks via watchdog
-      watchmedo auto-restart --directory=/app/avengercon/celery --pattern=*.py --recursive
-      -- celery --app=avengercon.celery.celery_server worker --loglevel="${LOG_LEVEL}"
-      --uid=nobody --gid=nogroup
-    volumes:
-      # Mount local host's code into the container for 'live' development
-      # but only hot reload when changes to the Celery submodule is made
-      - ./avengercon/celery:/app/avengercon/celery
-    env_file:
-      - .env
-    restart: always
-    depends_on:
-      redis:
-        condition: service_healthy
-    healthcheck:
-      test: [ "CMD-SHELL", "celery inspect ping | grep 'pong'" ]
-      interval: 5s
-      timeout: 30s
-      retries: 10
-
-  flower:
-    container_name: avengercon-flower
-    image: avengercon-flower
-    command:
-      celery --app=avengercon.celery.celery_server flower --loglevel="${LOG_LEVEL}"
-    restart: always
-    ports:
-      - target: 5555
-        mode: host
-    networks:
-      - avengercon
-    build: *avengercon-build
-    env_file:
-      - .env
-    depends_on:
-      redis:
-        condition: service_healthy
-      celery:
-        condition: service_healthy
-    labels:
-      - traefik.enable=true
-      - traefik.docker.network=avengercon
-      - traefik.http.services.avengercon-service-flower.loadBalancer.server.port=5555
-      - traefik.http.services.avengercon-service-flower.loadBalancer.server.scheme=http
-      - traefik.http.routers.avengercon-router-flower.entrypoints=avengercon-entrypoint-web
-      - traefik.http.routers.avengercon-router-flower.rule=Host(`${SUBDOMAIN_FLOWER}.${DOMAIN}`) && ${TRAEFIK_PRIVATE_IP_CLIENT_RULE}
-      - traefik.http.routers.avengercon-router-flower.service=avengercon-service-flower
-      - traefik.http.routers.avengercon-router-flower.tls=false
-    healthcheck:
-      test: [ "CMD-SHELL",
-              "curl --fail --silent http://localhost:5555 || exit 1" ]
-      interval: 5s
-      timeout: 5s
-      retries: 3
-      start_period: 5s
-
-  dask-scheduler:
-    container_name: avengercon-dask-scheduler
-    # https://docs.dask.org/en/latest/deploying-docker.html#docker-images
-    build: &avengercon-build-dask
-      context: ./
-      dockerfile: DockerfileAvengerconDask
-      target: dask
-#    image: ghcr.io/dask/dask:2024.2.1-py3.11
-    hostname: dask-scheduler
-    ports:
-      - target: 8786  # scheduler port
-        mode: host
-      - target: 8787  # Bokeh scheduler GUI
-        mode: host
-    networks:
-      - avengercon
-    command: [ "dask-scheduler" ]
-    labels:
-      - traefik.enable=true
-      - traefik.docker.network=avengercon
-
-      # Dask dashboard webapp via traefik
-      - traefik.http.services.avengercon-service-dask-scheduler.loadBalancer.server.port=8787
-      - traefik.http.services.avengercon-service-dask-scheduler.loadBalancer.server.scheme=http
-      - traefik.http.routers.avengercon-router-dask-scheduler.entrypoints=avengercon-entrypoint-web
-      - traefik.http.routers.avengercon-router-dask-scheduler.rule=Host(`${SUBDOMAIN_DASK}.${DOMAIN}`) && ${TRAEFIK_PRIVATE_IP_CLIENT_RULE}
-      - traefik.http.routers.avengercon-router-dask-scheduler.service=avengercon-service-dask-scheduler
-      - traefik.http.routers.avengercon-router-dask-scheduler.tls=false
-
-      # Enable localhost direct TCP connection
-      - traefik.tcp.services.avengercon-service-dask-tcp.loadBalancer.server.port=8786
-      - traefik.tcp.routers.avengercon-router-dask-tcp.service=avengercon-service-dask-tcp
-      - traefik.tcp.routers.avengercon-router-dask-tcp.entryPoints=avengercon-entrypoint-dask
-      - traefik.tcp.routers.avengercon-router-dask-tcp.rule=HostSNI(`*`) && ${TRAEFIK_PRIVATE_IP_CLIENT_RULE}
-      - traefik.tcp.routers.avengercon-router-dask-tcp.tls=false
-
-  dask-worker:
-    build: *avengercon-build-dask
-#    image: ghcr.io/dask/dask:2024.2.1-py3.11
-    command: [ "dask-worker", "tcp://dask-scheduler:8786" ]
-    networks:
-      - avengercon
-    # For Docker swarm you can specify multiple workers, this is ignored by `docker-compose up`
-    deploy:
-      mode: replicated
-      replicas: 3
-      restart_policy:
-        condition: on-failure
-
-  dask-notebook:
-    container_name: avengercon-dask-notebook
-#    image: ghcr.io/dask/dask-notebook:2024.2.1-py3.11
-    build:
-      context: ./
-      dockerfile: DockerfileAvengerconDask
-      target: notebook
-    ports:
-      - target: 8888
-        mode: host
-    networks:
-      - avengercon
-    environment:
-      - DASK_SCHEDULER_ADDRESS=${DASK_SCHEDULER_ADDRESS:?missing .env file with DASK_SCHEDULER_ADDRESS}
-    volumes:
-      - ./dask_examples:/home/jovyan/avengercon
-    labels:
-      - traefik.enable=true
-      - traefik.docker.network=avengercon
-      - traefik.http.services.avengercon-service-dask-notebook.loadBalancer.server.port=8888
-      - traefik.http.services.avengercon-service-dask-notebook.loadBalancer.server.scheme=http
-      - traefik.http.routers.avengercon-router-dask-notebook.entrypoints=avengercon-entrypoint-web
-      - traefik.http.routers.avengercon-router-dask-notebook.rule=Host(`${SUBDOMAIN_NOTEBOOK}.${DOMAIN}`) && ${TRAEFIK_PRIVATE_IP_CLIENT_RULE}
-      - traefik.http.routers.avengercon-router-dask-notebook.service=avengercon-service-dask-notebook
-      - traefik.http.routers.avengercon-router-dask-notebook.tls=false
-
-  api:
-    container_name: avengercon-api
-    image: avengercon-api
-    command:
-      /app/start-reload.sh
-    restart: always
-    ports:
-      - target: 8883
-        mode: host
-    networks:
-      - avengercon
-    build: *avengercon-build
-    env_file:
-      - .env
-    volumes:
-      - ./avengercon:/app/avengercon
-    depends_on:
-      redis:
-        condition: service_healthy
-      celery:
-        condition: service_healthy
-      minio:
-        condition: service_started
-    labels:
-      - traefik.enable=true
-      - traefik.docker.network=avengercon
-      - traefik.http.services.avengercon-service-api.loadBalancer.server.port=8883
-      - traefik.http.services.avengercon-service-api.loadBalancer.server.scheme=http
-      - traefik.http.routers.avengercon-router-api.entrypoints=avengercon-entrypoint-web
-      - traefik.http.routers.avengercon-router-api.rule=Host(`${SUBDOMAIN_API}.${DOMAIN}`) && ${TRAEFIK_PRIVATE_IP_CLIENT_RULE}
-      - traefik.http.routers.avengercon-router-api.service=avengercon-service-api
-      - traefik.http.routers.avengercon-router-api.tls=false
-    healthcheck:
-      # Note: The INFO: health checks that appear in the logs are from Uvicorn, not curl
-      test: [ "CMD-SHELL",
-              "curl --fail --silent http://localhost:8883/docs || exit 1" ]
-      interval: 20s
-      timeout: 5s
-      retries: 3
-      start_period: 5s
-
-  prefect:
-    container_name: avengercon-prefect
-    build:
-      context: ./
-      dockerfile: DockerfileAvengerconPrefect
-      target: development
-    command: prefect server start
-    ports:
-      - target: 4200
-        mode: host
-    networks:
-      - avengercon
-    volumes:
-      - prefect-volume:/root/.prefect
-      - /var/run/docker.sock:/var/run/docker.sock
-    env_file:
-      - .env
-    depends_on:
-      dask-scheduler:
-        condition: service_started
-    labels:
-      - traefik.enable=true
-      - traefik.docker.network=avengercon
-      - traefik.http.services.avengercon-service-prefect.loadBalancer.server.port=4200
-      - traefik.http.services.avengercon-service-prefect.loadBalancer.server.scheme=http
-      - traefik.http.routers.avengercon-router-prefect.entrypoints=avengercon-entrypoint-web
-      - traefik.http.routers.avengercon-router-prefect.rule=Host(`${SUBDOMAIN_PREFECT}.${DOMAIN}`) && ${TRAEFIK_PRIVATE_IP_CLIENT_RULE}
-      - traefik.http.routers.avengercon-router-prefect.service=avengercon-service-prefect
-      - traefik.http.routers.avengercon-router-prefect.tls=false
+#
+#  prefect:
+#    container_name: avengercon-prefect
+#    build:
+#      context: ./
+#      dockerfile: DockerfileAvengerconPrefect
+#      target: development
+#    command: prefect server start
+#    ports:
+#      - target: 4200
+#        mode: host
+#    networks:
+#      - avengercon
+#    volumes:
+#      - prefect-volume:/root/.prefect
+#      - /var/run/docker.sock:/var/run/docker.sock
+#    env_file:
+#      - .env
+#    depends_on:
+#      dask-scheduler:
+#        condition: service_started
+#    labels:
+#      - traefik.enable=true
+#      - traefik.docker.network=avengercon
+#      - traefik.http.services.avengercon-service-prefect.loadBalancer.server.port=4200
+#      - traefik.http.services.avengercon-service-prefect.loadBalancer.server.scheme=http
+#      - traefik.http.routers.avengercon-router-prefect.entrypoints=avengercon-entrypoint-web
+#      - traefik.http.routers.avengercon-router-prefect.rule=Host(`${SUBDOMAIN_PREFECT}.${DOMAIN}`) && ${TRAEFIK_PRIVATE_IP_CLIENT_RULE}
+#      - traefik.http.routers.avengercon-router-prefect.service=avengercon-service-prefect
+#      - traefik.http.routers.avengercon-router-prefect.tls=false
 
 # Note: For those that would like to enable TLS (HTTPS) services, re-enable this service
 # and copy paste your tunnel token into the .cloudflare.env file. Also be sure to declare
