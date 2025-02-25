@@ -1,4 +1,4 @@
-FROM python:3.13 AS requirements
+FROM python:3.13-slim AS requirements
 
 WORKDIR /tmp
 RUN mkdir -p requirements
@@ -10,7 +10,7 @@ COPY ./scripts/export_poetry_to_req_txt.sh export_poetry_to_req_txt.sh
 RUN chmod +x export_poetry_to_req_txt.sh
 RUN ./export_poetry_to_req_txt.sh
 
-FROM python:3.13 AS base
+FROM python:3.13-slim AS base
 
 # Ensure curl is available for healthcheck via curl
 # The additional packages are to support compiling google-re python wheel with the C++
@@ -26,8 +26,10 @@ FROM python:3.13 AS base
     # Add additional installations here with trailing `\` on each line \
 
 RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends \
-    curl
-#    build-essential \
+    curl \
+    build-essential
+#    gcc\
+#    g++
 #    libssl-dev \
 #    libffi-dev \
 #    python3-dev \
