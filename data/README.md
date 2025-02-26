@@ -10,7 +10,7 @@ and Excel Spreadsheet (XLSX) formats.
 
 ### JSON
 [The Warship Dataset](https://www.kaggle.com/datasets/queyrusi/the-warship-dataset) includes 40 years of Heavy-Class
-warship data from Russia, Turky, and the United States.
+warship data from Russia, Turkey, and the United States.
 
 ### XML
 The [India City Air Quality Index](https://www.kaggle.com/datasets/kdsharmaai/india-city-air-quality-index?select=India_city_polution_data.xml)
