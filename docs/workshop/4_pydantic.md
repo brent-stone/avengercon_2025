@@ -1,8 +1,8 @@
 ## Python's Semi-Structured Data Parser
-If you're using Python to read semi-structured data like JSON or XML that has more than
-1-layer of data (which Pandas can gracefully handle), you should be using Pydantic. No 
-exceptions. Anything you wrote custom code to handle is already implemented in Pydantic
-using a 100x faster rust-optimized backend and a much more maintainable way.
+If we're using Python to read semi-structured data like JSON or XML that has more than
+1-layer of data, we should be using Pydantic. No exceptions. Anything custom we may write
+is already implemented in Pydantic using a 100x faster rust-optimized backend and is much
+more maintainable.
 
 ### Checkout the documentation
 The [Pydantic documentation](https://docs.pydantic.dev/latest/) is very user friendly.

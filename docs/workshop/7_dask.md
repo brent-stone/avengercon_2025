@@ -1,5 +1,5 @@
 !!! info "Deploy the Dask Services"
-    Stop you currently running containers started with `run_dev.sh` and then execute
+    Stop your currently running containers started with `run_dev.sh` and then execute
     `run_dev_dask.sh`. Don't forget `chmod +x run_dev_dask.sh` on unix.
 
 ## What is Dask?
@@ -50,10 +50,3 @@ avengercon-dask-notebook       | [... ServerApp] http://fd52fdf68911:8888/lab?to
 avengercon-dask-notebook       | [I 2024-02-17 19:42:45.576 ServerApp]     http://127.0.0.1:8888/lab?token=b952e22de792f69923d281c04f66393518cd74a0c7fd1acf
 avengercon-dask-notebook       | [I 2024-02-17 19:42:45.576 ServerApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
 ```
-
-    
-
-## Preparing for using Dask in your own projects
-
-Since we've already seen some basics of using Dask in the Jupyter notebooks, let's
-transition to a couple of tasks using Prefect.
