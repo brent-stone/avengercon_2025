@@ -99,6 +99,7 @@ markdown_extensions:
 - pymdownx.snippets
 - md_in_html
 - pymdownx.inlinehilite
+- pymdownx.mark
 
 plugins:
   - search
