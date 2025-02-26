@@ -17,7 +17,7 @@ command. The output looks something like this:
 
 There's four distinct pieces of information in each line
 
-1. `(1544106679.432583)` is the unix epoch timestamp in nanoseconds
+1. `(1544106679.432583)` is the unix epoch timestamp in microseconds
 2. `can0` is the network name
 3. `564` before the `#` is the destination ID
 4. `122DF953813CA2` after the `#` is the data for the destination
@@ -41,7 +41,7 @@ to parse arbitrary strings using pre-determined rules.
 ## Speeding up the slow native Python regex library
 ![Speedup](5_images/i_am_speed.jpg)
 
-There's two options for somewhat increasing the speed of a regex in Python if you need
+There are two options for somewhat increasing the speed of a regex in Python if you need
 to parse lots of non-standard semi-structured data.
 
 1. [Google's `re2`](https://github.com/google/re2): re2 and it's Python wrapper [`google-re2`](https://pypi.org/project/google-re2/)

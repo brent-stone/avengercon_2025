@@ -30,5 +30,5 @@ if __name__ == "__main__":
 You're likely familiar with [Jupyter Notebooks](https://jupyter.org/). We'll use some
 in the next section covering Dask. Jupyter relies on the [`Anaconda`](https://www.anaconda.com/download)
 Python package manager and ecosystem. Anaconda uses **conda** packages instead of wheels.
-If you Python data engineering code is destined to be mostly run in Jupyter Notebooks
-and an Anaconda environment, you'll instead want to [checkout the conda packing documentation](https://docs.conda.io/projects/conda-build/en/stable/user-guide/tutorials/build-pkgs.html)
+If your Python data engineering code is destined to be mostly run in Jupyter Notebooks
+and an Anaconda environment, you'll instead want to checkout [the conda packing documentation](https://docs.conda.io/projects/conda-build/en/stable/user-guide/tutorials/build-pkgs.html)
