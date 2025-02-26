@@ -1,3 +1,7 @@
+!!! info "Deploy the Dask Services"
+    Stop you currently running containers started with `run_dev.sh` and then execute
+    `run_dev_dask.sh`. Don't forget `chmod +x run_dev_dask.sh` on unix.
+
 ## What is Dask?
 
 The [Dask Tutorial](https://tutorial.dask.org/00_overview.html) and [this article](https://www.nvidia.com/en-us/glossary/dask/)

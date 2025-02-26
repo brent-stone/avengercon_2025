@@ -68,7 +68,7 @@ of Beam source code"](https://github.com/apache/beam/tree/master/learning/tour-o
 to try out Apache Beam. "Tour of Beam" relies on "Beam Playground" and
 Google Cloud Platform (GCP).
 
-![Tour of Beam](5_images/beam.png)
+![Tour of Beam](11_images/beam.png)
 
 
 ## 'Real' Use of Apache Beam
@@ -95,4 +95,4 @@ for Apache Beam which shows the need to package, maintain, and troubleshoot cust
 images for each execution environment a beam pipeline may try to execute. See the excerpt
 of this complex workflow for basic Apache Beam tasks below.
 
-[![Beam Pipeline](5_images/beam_pipeline.png)](5_images/beam_pipeline.png)
+[![Beam Pipeline](11_images/beam_pipeline.png)](11_images/beam_pipeline.png)
