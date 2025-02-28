@@ -157,7 +157,7 @@ file.
 
 === "Unix (Mac/Linux)"
     ``` bash
-    chmox +x scripts/initialize_env.sh
+    chmod +x scripts/initialize_env.sh
     ./scripts/initialize_env.sh
     ```
 

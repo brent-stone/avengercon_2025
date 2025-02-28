@@ -1,5 +1,3 @@
-
-
 services:
   traefik:
     container_name: avengercon-proxy
@@ -185,59 +183,6 @@ services:
       - traefik.tcp.routers.avengercon-router-redis-tcp.rule=HostSNI(`*`) && ${TRAEFIK_PRIVATE_IP_CLIENT_RULE}
       - traefik.tcp.routers.avengercon-router-redis-tcp.tls=false
 
-#
-#  prefect:
-#    container_name: avengercon-prefect
-#    build:
-#      context: ./
-#      dockerfile: DockerfileAvengerconPrefect
-#      target: development
-#    command: prefect server start
-#    ports:
-#      - target: 4200
-#        mode: host
-#    networks:
-#      - avengercon
-#    volumes:
-#      - prefect-volume:/root/.prefect
-#      - /var/run/docker.sock:/var/run/docker.sock
-#    env_file:
-#      - .env
-#    depends_on:
-#      dask-scheduler:
-#        condition: service_started
-#    labels:
-#      - traefik.enable=true
-#      - traefik.docker.network=avengercon
-#      - traefik.http.services.avengercon-service-prefect.loadBalancer.server.port=4200
-#      - traefik.http.services.avengercon-service-prefect.loadBalancer.server.scheme=http
-#      - traefik.http.routers.avengercon-router-prefect.entrypoints=avengercon-entrypoint-web
-#      - traefik.http.routers.avengercon-router-prefect.rule=Host(`${SUBDOMAIN_PREFECT}.${DOMAIN}`) && ${TRAEFIK_PRIVATE_IP_CLIENT_RULE}
-#      - traefik.http.routers.avengercon-router-prefect.service=avengercon-service-prefect
-#      - traefik.http.routers.avengercon-router-prefect.tls=false
-
-# Note: For those that would like to enable TLS (HTTPS) services, re-enable this service
-# and copy paste your tunnel token into the .cloudflare.env file. Also be sure to declare
-# a 443 entrypoint with Traefik and swap out the commented settings with the HTTP config
-# used for the workshop. You'll also need to ensure your Cloudflare Access settings
-# accurately match the DOMAIN and SUBDOMAIN_* targets declared in the .env
-#  cf-tunnel:
-#    # NOTE: Run the /scripts/expand_quic_buffers.sh script to ensure this
-#    # container has the recommended buffer sizes available.
-#    container_name: avengercon-cloudflare
-#    image: cloudflare/cloudflared:latest
-#    restart: unless-stopped
-#    command: tunnel --no-autoupdate run
-#    env_file:
-#      - .cloudflare.env
-#    volumes:
-#      # Enable communication between cloudflared container and the docker daemon for
-#      # internal docker bridge network DNS resolution
-#      - /var/run/docker.sock:/var/run/docker.sock:ro
-#    networks:
-#      - cf-tunnel
-
-
 volumes:
   redis-volume:
   minio-volume:
@@ -247,14 +192,3 @@ networks:
   avengercon:
     internal: false
     name: avengercon
-
-#networks:
-#  cf-tunnel:
-#    internal: false
-#    name: cf-tunnel
-#  avengercon-public:
-#    internal: false
-#    name: avengercon-public
-#  avengercon-private:
-#    internal: true
-#    name: avengercon-private
