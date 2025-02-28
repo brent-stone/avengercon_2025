@@ -1,0 +1,1547 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Avengercon IX Workshop--Python Data Pipelines and Parsers">
+      
+      
+      
+      
+        <link rel="prev" href="../..">
+      
+      
+        <link rel="next" href="../2_data_engineering_primer/">
+      
+      
+      <link rel="icon" href="../../favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.5">
+    
+    
+      
+        <title>Hello, Workshop! - Avengercon IX Workshop</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.8608ea7d.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue-grey" data-md-color-accent="teal">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#get-ready-system-level-installation" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Avengercon IX Workshop" class="md-header__button md-logo" aria-label="Avengercon IX Workshop" data-md-component="logo">
+      
+  <img src="../../cyber_branch.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Avengercon IX Workshop
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Hello, Workshop!
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue-grey" data-md-color-accent="teal"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7M9 21v-1h6v1a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1m3-17a5 5 0 0 0-5 5c0 2.05 1.23 3.81 3 4.58V16h4v-2.42c1.77-.77 3-2.53 3-4.58a5 5 0 0 0-5-5"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="blue-grey" data-md-color-accent="teal"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7M9 21a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1H9z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/brent-stone/avengercon_2025" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    brent-stone/avengercon_2025
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
+          
+  
+  Workshop
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../developers/cloudflare/" class="md-tabs__link">
+          
+  
+  Other Information
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Avengercon IX Workshop" class="md-nav__button md-logo" aria-label="Avengercon IX Workshop" data-md-component="logo">
+      
+  <img src="../../cyber_branch.png" alt="logo">
+
+    </a>
+    Avengercon IX Workshop
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/brent-stone/avengercon_2025" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    brent-stone/avengercon_2025
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Workshop
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Workshop
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Hello, Workshop!
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Hello, Workshop!
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="Page contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Page contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#get-ready-system-level-installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Get Ready: System-level installation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#get-set-prepare-your-virtual-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Get Set: Prepare your virtual environment
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Get Set: Prepare your virtual environment">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#install-the-avengercon-package-and-dependencies" class="md-nav__link">
+    <span class="md-ellipsis">
+      Install the avengercon package and dependencies
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configure-your-ide-to-use-the-virtual-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configure your IDE to use the virtual environment
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generate-your-env-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      Generate your .env file
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#launch" class="md-nav__link">
+    <span class="md-ellipsis">
+      🚀 Launch!
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🚀 Launch!">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#verify-you-can-access-your-deployed-services" class="md-nav__link">
+    <span class="md-ellipsis">
+      Verify you can access your deployed services
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../2_data_engineering_primer/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Data Engineering Primer
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../3_pandas/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Pandas with Extras
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../4_pydantic/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Pydantic
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../5_regex/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Regular Expressions
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../6_python_wheels/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Python Packages and Wheels
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../7_dask/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Dask
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../8_celery/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Celery & Flower
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../9_automation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Automation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10_ORM_DBT/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ORMs and DBT
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../11_beam/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Apache Beam
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Other Information
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Other Information
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developers/cloudflare/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Cloudflare
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developers/docker/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Docker
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developers/docs/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Documentation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developers/gitlab_ci/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    GitLab CI
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developers/os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Operating Systems
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developers/postgres/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    PostgreSQL
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developers/sqlalchemy_alembic/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SQLAlchemy & Alembic
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developers/testing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Testing
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developers/traefik/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Traefik
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="Page contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Page contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#get-ready-system-level-installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Get Ready: System-level installation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#get-set-prepare-your-virtual-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Get Set: Prepare your virtual environment
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Get Set: Prepare your virtual environment">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#install-the-avengercon-package-and-dependencies" class="md-nav__link">
+    <span class="md-ellipsis">
+      Install the avengercon package and dependencies
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configure-your-ide-to-use-the-virtual-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configure your IDE to use the virtual environment
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generate-your-env-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      Generate your .env file
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#launch" class="md-nav__link">
+    <span class="md-ellipsis">
+      🚀 Launch!
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🚀 Launch!">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#verify-you-can-access-your-deployed-services" class="md-nav__link">
+    <span class="md-ellipsis">
+      Verify you can access your deployed services
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/brent-stone/avengercon_2025/edit/main/docs/workshop/1_hello_workshop.md" title="Edit this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
+    </a>
+  
+  
+    
+      
+    
+    <a href="https://github.com/brent-stone/avengercon_2025/raw/main/docs/workshop/1_hello_workshop.md" title="View source of this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 18c.56 0 1 .44 1 1s-.44 1-1 1-1-.44-1-1 .44-1 1-1m0-3c-2.73 0-5.06 1.66-6 4 .94 2.34 3.27 4 6 4s5.06-1.66 6-4c-.94-2.34-3.27-4-6-4m0 6.5a2.5 2.5 0 0 1-2.5-2.5 2.5 2.5 0 0 1 2.5-2.5 2.5 2.5 0 0 1 2.5 2.5 2.5 2.5 0 0 1-2.5 2.5M9.27 20H6V4h7v5h5v4.07c.7.08 1.36.25 2 .49V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h4.5a8.2 8.2 0 0 1-1.23-2"/></svg>
+    </a>
+  
+
+
+  <h1>Hello, Workshop!</h1>
+
+<p>This is the beginning of our journey. Our goal is simple but not always easy: can we
+get our developer environment setup?</p>
+<p><a href="https://xkcd.com/1987/"><img alt="Dev Environments" src="https://imgs.xkcd.com/comics/python_environment.png" /></a></p>
+<h2 id="get-ready-system-level-installation"><strong>Get Ready</strong>: System-level installation<a class="headerlink" href="#get-ready-system-level-installation" title="Permanent link">&para;</a></h2>
+<p><img alt="Take This" src="../1_images/take_this.png" /></p>
+<div class="admonition tip">
+<p class="admonition-title">Dev Environment Options</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Local Python, Docker Services</label><label for="__tabbed_1_2">Docker Only</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p>This is the recommended way to participate in the workshop. It ensures you have gone through each step to prepare
+your local dev environment to rapidly work with different python versions (via <code>pyenv</code>) and build, test, and
+publish python wheels using <code>poetry</code>.</p>
+</div>
+<div class="tabbed-block">
+<p>For those who don't want to make any adjustments to their local dev environment beyond running Docker containers,
+a Kasm Workspace with Ubuntu 22.04 Jammy Jellyfish and Python 3.13 is provided.</p>
+<p>For those on a Unix operating system:
+    <div class="language-bash highlight"><pre><span></span><code>chmod<span class="w"> </span>+x<span class="w"> </span>./run_dev_desktop.sh
+./run_dev_desktop.sh<span class="w"> </span>&lt;flag&gt;
+</code></pre></div></p>
+<p>For those on a Windows operating system with <a href="https://learn.microsoft.com/en-us/windows/wsl/install">Windows Subsystem for Linux (WSL) enabled</a>:
+    <div class="language-bash highlight"><pre><span></span><code>bash<span class="w"> </span>run_dev_desktop.sh<span class="w"> </span>&lt;flag&gt;
+</code></pre></div></p>
+<p>For those on an x86/AMD64 architecture CPU (Intel, AMD, etc.), running <code>run_dev_desktop.sh</code> with the <code>-d</code> flag will
+pull the AMD64 image from GitHub. For those on an ARM architecture CPU (Mac M1, etc.), use the <code>-m</code> flag to pull
+an ARM compiled workspace from Docker Hub. If neither options work, use the <code>-l</code> flag to locally build the image.
+Please note that locally building the image may take several minutes to download and build.</p>
+<p>The Kasm Workspace is accessible at <a href="https://localhost:6901/">https://localhost:6901/</a></p>
+<p><strong>username</strong>: kasm_user </br>
+<strong>password</strong>: avengercon-2025</p>
+<p><img alt="Kasm Workspace" src="../1_images/kasm_workspace.png" /></p>
+<p><span class="twemoji green"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m18.75 22.16-2.75-3L17.16 18l1.59 1.59L22.34 16l1.16 1.41zM13 13V7h-2v6zm0 4v-2h-2v2zM12 2c5.5 0 10 4.5 10 10l-.09 1.31A6.005 6.005 0 0 0 14 19c0 .95.22 1.85.62 2.65-.84.23-1.71.35-2.62.35-5.5 0-10-4.5-10-10S6.5 2 12 2"/></svg></span> After successfully loging in for the first time, stop the deployment with
+<code>ctrl+c</code> or <code>control-c</code> in the terminal used to run the script. Then uncomment the following lines in the appropriate 
+<code>docker-compose-dev-container.&lt;architecture&gt;.yaml</code> file to get a live sync of the workshop files inside the
+Kasm Workspace Ubuntu desktop. If you're using a visual IDE like VSCode or PyCharm, select the commented lines
+and press <code>ctrl + /</code> or <code>⌘ + /</code> to quickly uncomment.</p>
+<div class="language-py highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">docker-compose-dev-container.ARCHITECTURE.yaml</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">services</span><span class="p">:</span>
+  <span class="n">kasm</span><span class="p">:</span>
+    <span class="n">container_name</span><span class="p">:</span> <span class="n">kasm</span><span class="o">-</span><span class="n">ubuntu</span><span class="o">-</span><span class="n">desktop</span>
+    <span class="n">image</span><span class="p">:</span> <span class="n">brentstone</span><span class="o">/</span><span class="n">kasm</span><span class="o">-</span><span class="n">ubuntu</span><span class="o">-</span><span class="n">desktop</span><span class="p">:</span><span class="mf">0.2025.1</span><span class="o">-</span><span class="n">arm</span>
+    <span class="n">ports</span><span class="p">:</span>
+      <span class="o">-</span> <span class="n">target</span><span class="p">:</span> <span class="mi">6901</span>
+        <span class="n">published</span><span class="p">:</span> <span class="mi">6901</span>
+        <span class="n">mode</span><span class="p">:</span> <span class="n">host</span>
+    <span class="n">networks</span><span class="p">:</span>
+      <span class="o">-</span> <span class="n">avengercon</span><span class="o">-</span><span class="n">dev</span><span class="o">-</span><span class="n">desktop</span>
+    <span class="n">volumes</span><span class="p">:</span>
+      <span class="o">-</span> <span class="nb">type</span><span class="p">:</span> <span class="n">volume</span>
+        <span class="n">source</span><span class="p">:</span> <span class="n">kasm</span><span class="o">-</span><span class="n">ubuntu</span><span class="o">-</span><span class="n">volume</span>
+        <span class="n">target</span><span class="p">:</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">kasm</span><span class="o">-</span><span class="n">user</span>
+        <span class="n">read_only</span><span class="p">:</span> <span class="n">false</span>
+      <span class="c1"># Uncomment after initial build/run of the container to enable real-time synchronization between localhost and</span>
+      <span class="c1"># in container workshop files</span>
+<span class="hll"><span class="c1">#      - type: bind</span>
+</span><span class="hll"><span class="c1">#        source: ./</span>
+</span><span class="hll"><span class="c1">#        target: /home/kasm-user/Desktop/avengercon_2025/</span>
+</span><span class="hll"><span class="c1">#        read_only: false</span>
+</span>    <span class="n">environment</span><span class="p">:</span>
+      <span class="c1"># username is kasm_user</span>
+      <span class="n">VNC_PW</span><span class="p">:</span> <span class="n">avengercon</span><span class="o">-</span><span class="mi">2025</span>
+</code></pre></div></td></tr></table></div>
+<p>With the updated docker-compose file, re-run <code>run_dev_desktop.sh</code> as before (don't forget any flags) and log
+back into the Kasm Workspace. You should now see an <code>avengercon_2025</code> folder in the Ubuntu desktop.</p>
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.4 6H20v10h-7l-.4-2H7v7H5V4h9zm-.4 8h2v-2h2v-2h-2V8h-2v2l-1-2V6h-2v2H9V6H7v2h2v2H7v2h2v-2h2v2h2v-2l1 2zm-3-4V8h2v2zm3 0h2v2h-2z"/></svg></span> <strong>Last Steps!</strong></p>
+<ol>
+<li>In Kasm Workspace, open a terminal and run the <code>kasm-ubuntu-python-final-setup.sh</code> script.</li>
+<li>Verify <code>python --version</code> and <code>poetry --version</code> works in VSCode terminal</li>
+<li>Add the Python VSCode extension</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<p>You'll need the following software installed to begin:</p>
+<ol>
+<li><a href="https://docs.docker.com/engine/install/">Docker</a></li>
+<li><a href="https://www.python.org/downloads/">Python 3.13</a></li>
+<li><a href="https://git-scm.com/downloads">Git</a></li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Optional software</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:3"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><input id="__tabbed_2_3" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Python interpreter manager</label><label for="__tabbed_2_2">Poetry</label><label for="__tabbed_2_3">Git GUI Client</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p>To keep Python from messing up your OS configs, It is recommended to install &amp;
+manage Python interpreters using a manager like
+<a href="https://github.com/pyenv/pyenv?tab=readme-ov-file#installation">pyenv</a> or
+<a href="https://hatch.pypa.io/latest/">hatch</a>. This will allow you to add/remove specific
+and multiple Python environments on your system. Testing your code against multiple
+versions of Python is a necessity for professional projects!</p>
+</div>
+<div class="tabbed-block">
+<p><a href="https://python-poetry.org/docs/#installation">Poetry</a> is an alternative to <code>pip</code>.
+Those who prefer <code>pip</code> or other Python environment tools are welcome to use the
+<code>requirements-dev.txt</code> file in the <strong>requirements</strong> directory of this repo.
+<br/><strong>Why Poetry?</strong><br/>
+While hatch and other tools are promising, as of this workshop Poetry remains one
+of the best developer experiences (DX) for setup of python virtual environments and
+<a href="https://packaging.python.org/en/latest/specifications/pyproject-toml/#pyproject-toml-spec">modern pyproject.toml based Python packages</a>.</p>
+</div>
+<div class="tabbed-block">
+<p><a href="https://git-scm.com/downloads/guis">Git GUI Clients</a> simply save time. While it
+may feel nice to flex that you have every possible permutation of Git commands
+memorized, 2-second point-and-click to stage dozens of files and side-by-side
+highlighted diffs are the way to go.</p>
+</div>
+</div>
+</div>
+</div>
+<h2 id="get-set-prepare-your-virtual-environment"><strong>Get Set</strong>: Prepare your virtual environment<a class="headerlink" href="#get-set-prepare-your-virtual-environment" title="Permanent link">&para;</a></h2>
+<h3 id="install-the-avengercon-package-and-dependencies">Install the <code>avengercon</code> package and dependencies<a class="headerlink" href="#install-the-avengercon-package-and-dependencies" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Establish a virtual environment with <code>poetry env activate</code> or <a href="https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/#create-and-use-virtual-environments">use pip</a><ul>
+<li>Look for an additional command Poetry recommends you run. It'll like start with <code>source ...</code></li>
+</ul>
+</li>
+<li>Install <code>avengercon</code> &amp; dependencies with <code>poetry install</code> or <a href="https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/#using-a-requirements-file">use pip</a></li>
+<li>Confirm that the local <code>avengercon</code> package is available in your virtual environment</li>
+</ol>
+<div class="language-bash highlight"><pre><span></span><code><span class="o">(</span>avengercon-py3.13<span class="o">)</span><span class="w"> </span>$<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>avengercon
+Hello,<span class="w"> </span>Workshop!
+</code></pre></div>
+<h3 id="configure-your-ide-to-use-the-virtual-environment">Configure your IDE to use the virtual environment<a class="headerlink" href="#configure-your-ide-to-use-the-virtual-environment" title="Permanent link">&para;</a></h3>
+<p><a href="https://code.visualstudio.com/docs/python/environments">VSCode</a>,
+<a href="https://www.jetbrains.com/help/pycharm/creating-virtual-environment.html">PyCharm</a>, and
+most other popular Integrated Development Environment (IDEs) support intellisense and
+other productivity boosters when properly configured to use the project's virtual
+environment.</p>
+<div class="admonition tip">
+<p class="admonition-title">Configure IDE to use the Poetry virtual environment</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 16.47V7.39l-6 4.54M2.22 9.19a.86.86 0 0 1-.02-1.15l1.2-1.11c.2-.18.69-.26 1.05 0l3.42 2.61 7.93-7.25c.32-.32.87-.45 1.5-.12l4 1.91c.36.21.7.54.7 1.15v13.5c0 .4-.29.83-.6 1l-4.4 2.1c-.32.13-.92.01-1.13-.2l-8.02-7.3-3.4 2.6c-.38.26-.85.19-1.05 0l-1.2-1.1c-.32-.33-.28-.87.05-1.2l3-2.7"/></svg></span> VSCode</label><label for="__tabbed_3_2"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7.833 6.666v-.055c0-1-.667-1.5-1.778-1.5H4.389v3.055h1.723c1.111 0 1.721-.666 1.721-1.5M0 0v24h24V0zm2.223 3.167h4c2.389 0 3.833 1.389 3.833 3.445v.055c0 2.278-1.778 3.5-4.001 3.5H4.389v2.945H2.223zM11.277 21h-9v-1.5h9zm4.779-7.777c-2.944.055-5.111-2.223-5.111-5.057C10.944 5.333 13.056 3 16.111 3c1.889 0 3 .611 3.944 1.556l-1.389 1.61c-.778-.722-1.556-1.111-2.556-1.111-1.658 0-2.873 1.375-2.887 3.084.014 1.709 1.174 3.083 2.887 3.083 1.111 0 1.833-.445 2.61-1.167l1.39 1.389c-.999 1.112-2.166 1.779-4.054 1.779"/></svg></span> PyCharm</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<ol>
+<li>Open the VSCode Command Pallet with <code>cmd + shift + p</code> or <code>command + shift + p</code></li>
+<li><code>Python: Select Interpreter</code></li>
+<li>Select the Python interpreter located in <code>./.venv/...</code></li>
+</ol>
+</div>
+<div class="tabbed-block">
+<ol>
+<li>PyCharm main menu &gt; <code>Settings</code></li>
+<li><code>Project: avengercon_2025</code> &gt; <code>Python Interpreter</code></li>
+<li><code>Add Local Interpreter</code> &gt; <code>Select Existing</code></li>
+<li><strong>Type</strong> <code>Poetry</code> &gt; <code>Poetry env to use</code> &gt; select the Python interpreter located in the <code>./.venv/bin</code> folder</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<h3 id="generate-your-env-file">Generate your <code>.env</code> file<a class="headerlink" href="#generate-your-env-file" title="Permanent link">&para;</a></h3>
+<p>Using a terminal from the top level <code>avengercon_2025</code> directory, run the
+<code>initialize_env.sh</code> script to dynamically generate configuration metadata in a <code>.env</code>
+file.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Windows</label><label for="__tabbed_4_2">Unix (Mac/Linux)</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="language-text highlight"><pre><span></span><code>bash scripts\initialize_env.sh
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-bash highlight"><pre><span></span><code>chmod<span class="w"> </span>+x<span class="w"> </span>scripts/initialize_env.sh
+./scripts/initialize_env.sh
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>You should now see a <code>.env</code>, <code>.localhost.env</code>, and <code>.personal.env</code> files in your <code>avengercon_2025</code> directory that looks
+something like this:
+<div class="language-toml highlight"><span class="filename">.env</span><pre><span></span><code><span class="c1"># Used by run_*.sh scripts &amp; avengercon module to dynamically configure localhost</span>
+<span class="c1"># development and testing environment variable coordination.</span>
+<span class="c1"># Valid log level values: &#39;critical&#39;, &#39;error&#39;, &#39;warning&#39;, &#39;info&#39;, &#39;debug&#39;</span>
+<span class="n">LOG_LEVEL</span><span class="o">=</span><span class="mf">inf</span><span class="n">o</span>
+<span class="c1"># Traefik settings and labels</span>
+<span class="n">HTTP_PORT</span><span class="o">=</span><span class="mi">57073</span>
+<span class="n">DOMAIN</span><span class="o">=</span><span class="err">localhost</span>
+<span class="p">...</span>
+</code></pre></div></p>
+<h2 id="launch">🚀 <strong>Launch!</strong><a class="headerlink" href="#launch" title="Permanent link">&para;</a></h2>
+<p>Using a terminal from the top level <code>avengercon_2025</code> directory, launch the <code>docker
+compose</code> deployment using the <code>run_dev.sh</code> script.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">Windows</label><label for="__tabbed_5_2">Unix (Mac/Linux)</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="language-text highlight"><pre><span></span><code>bash run_dev.sh
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-bash highlight"><pre><span></span><code>chmox<span class="w"> </span>+x<span class="w"> </span>run_dev.sh
+run_dev.sh
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Keep your containers deployed</p>
+<p>Don't close the terminal running your deployment! We'll be using the logs that
+appear to help monitor the state of our workshop's services and code.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Port conflicts</p>
+<p>If you're already running a Traefik reverse proxy or services that use the ports
+listed in the <code>.env</code>, you will need to adjust the ports being used for this workshop.</p>
+</div>
+<p>If everything is going well, you should not see any "ERR" or "ERROR" in the logs that
+appear in your terminal.
+<div class="language-text highlight"><span class="filename">Happy Logs</span><pre><span></span><code>...
+avengercon-minio   | Documentation: https://min.io/docs/minio/linux/index.html
+avengercon-minio   | Warning: The standard parity is set to 0. This can lead to data loss.
+avengercon-proxy   | 2024-02-15T16:35:39Z INF Traefik version 3.0.0-rc1 built on 2024-02-13T13:41:20Z version=3.0.0-rc1
+avengercon-proxy   | 2024-02-15T16:35:39Z INF
+avengercon-proxy   | Stats collection is disabled.
+avengercon-proxy   | Help us improve Traefik by turning this feature on :)
+avengercon-proxy   | More details on: https://doc.traefik.io/traefik/contributing/data-collection/
+avengercon-proxy   |
+avengercon-proxy   | 2024-02-15T16:35:39Z INF Starting provider aggregator aggregator.ProviderAggregator
+avengercon-proxy   | 2024-02-15T16:35:39Z INF Starting provider *docker.Provider
+avengercon-proxy   | 2024-02-15T16:35:39Z INF Starting provider *traefik.Provider
+avengercon-proxy   | 2024-02-15T16:35:39Z INF Starting provider *acme.ChallengeTLSALPN
+avengercon-minio   |
+avengercon-minio   |  You are running an older version of MinIO released 1 day before the latest release
+avengercon-minio   |  Update: Run `mc admin update ALIAS`
+avengercon-minio   |
+avengercon-minio   |
+avengercon-whoami  | 2024/02/15 16:38:02 172.27.0.3:45642 - - [15/Feb/2024:16:38:02 +0000] &quot;GET / HTTP/1.1&quot; - -
+...
+</code></pre></div></p>
+<h3 id="verify-you-can-access-your-deployed-services">Verify you can access your deployed services<a class="headerlink" href="#verify-you-can-access-your-deployed-services" title="Permanent link">&para;</a></h3>
+<p>Ensure you can open a web browser to the following local services. For each button,
+<strong>you probably want to right-click and open in new tab</strong>.</p>
+<p>If anything fails to open, double-check the port in the opened link matches the port
+specified by <code>HTTP_PORT</code> in your <code>.env</code> configuration. (default is <code>57073</code>; l33t speak
+approximation for "Stone")</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="6:4"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><input id="__tabbed_6_3" name="__tabbed_6" type="radio" /><input id="__tabbed_6_4" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Whoami</label><label for="__tabbed_6_2">Redis</label><label for="__tabbed_6_3">MinIO</label><label for="__tabbed_6_4">Traefik</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p><a class="md-button md-button--primary" href="http://whoami.localhost:57073/">Whoami <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11.03 2.59a1.5 1.5 0 0 1 1.94 0l7.5 6.363a1.5 1.5 0 0 1 .53 1.144V19.5a1.5 1.5 0 0 1-1.5 1.5h-5.75a.75.75 0 0 1-.75-.75V14h-2v6.25a.75.75 0 0 1-.75.75H4.5A1.5 1.5 0 0 1 3 19.5v-9.403c0-.44.194-.859.53-1.144ZM12 3.734l-7.5 6.363V19.5h5v-6.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v6.25h5v-9.403Z"/></svg></span></a></p>
+<div class="language-text highlight"><span class="filename">whoami.localhost</span><pre><span></span><code>Name: avengercon_whoami
+Hostname: b967780eb9c6
+IP: 127.0.0.1
+IP: ###.###.###.###
+RemoteAddr: ###.###.###.###:42012
+GET / HTTP/1.1
+Host: whoami.localhost:57073
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+Accept-Encoding: gzip, deflate, br
+...
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<p><a class="md-button md-button--primary" href="http://cache.localhost:57073/">Redis <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M22.71 13.145c-1.66 2.092-3.452 4.483-7.038 4.483-3.203 0-4.397-2.825-4.48-5.12.701 1.484 2.073 2.685 4.214 2.63 4.117-.133 6.94-3.852 6.94-7.239 0-4.05-3.022-6.972-8.268-6.972-3.752 0-8.4 1.428-11.455 3.685C2.59 6.937 3.885 9.958 4.35 9.626c2.648-1.904 4.748-3.13 6.784-3.744C8.12 9.244.886 17.05 0 18.425c.1 1.261 1.66 4.648 2.424 4.648.232 0 .431-.133.664-.365a101 101 0 0 0 5.54-6.765c.222 3.104 1.748 6.898 6.014 6.898 3.819 0 7.604-2.756 9.33-8.965.2-.764-.73-1.361-1.261-.73zm-4.349-5.013c0 1.959-1.926 2.922-3.685 2.922a4.45 4.45 0 0 1-2.235-.568c1.051-1.592 2.092-3.225 3.21-4.973 1.972.334 2.71 1.43 2.71 2.619"/></svg></span></a></p>
+<p>The login is <code>default</code> and the password is in your <code>.env</code> as the <code>REDIS_PASSWORD</code>
+value</p>
+<p><img alt="Redis Insight" src="../1_images/redis.png" /></p>
+</div>
+<div class="tabbed-block">
+<p><a class="md-button md-button--primary" href="http://bucket.localhost:57073/">MinIO <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.207.006a2.16 2.16 0 0 0-1.62.582 2.15 2.15 0 0 0-.095 3.035l3.408 3.55a3.042 3.042 0 0 1-.663 4.688l-.463.239V7.285a15.42 15.42 0 0 0-8.018 10.487v.017l6.549-3.328v7.621L13.779 24V13.682l.897-.463a4.443 4.443 0 0 0 1.22-7.03l-3.37-3.525a.75.75 0 0 1 .037-1.055.75.75 0 0 1 1.056.038l.467.486-.006.006 4.07 4.244a.057.057 0 0 0 .082 0 .06.06 0 0 0 0-.07l-3.14-5.143-.149.143.149-.145C14.494.393 13.829.054 13.207.006m-.902 9.865v2.994l-4.152 2.149a14 14 0 0 1 2.767-3.928 14 14 0 0 1 1.385-1.215"/></svg></span></a></p>
+<p>The login and password is in your <code>.env</code> as the <code>MINIO_ROOT_USER</code>
+and <code>MINIO_ROOT_PASSWORD</code> values</p>
+<p><img alt="MinIO" src="../1_images/minio.png" /></p>
+</div>
+<div class="tabbed-block">
+<p><a class="md-button md-button--primary" href="http://proxy.localhost:57073/dashboard/#/">Traefik <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 1.19c1.088 0 2.056.768 2.056 1.714 0 .947-.921 1.715-2.056 1.715q-.195 0-.509-.064a.7.7 0 0 0-.475.076l-7.37 4.195a.344.344 0 0 0 .001.597l7.99 4.49a.69.69 0 0 0 .669 0l8.034-4.468a.343.343 0 0 0 .003-.598l-2.507-1.424a.68.68 0 0 0-.67-.003l-2.647 1.468a.23.23 0 0 0-.119.18l-.001.025c0 .946-.921 1.714-2.056 1.714s-2.056-.768-2.056-1.714c0-.947.921-1.715 2.056-1.715q.063 0 .145.007l.087.008.096.013a.7.7 0 0 0 .425-.08l3.913-2.173c.3-.166.662-.171.965-.017l.04.023 5.465 3.104a1.03 1.03 0 0 1 .03 1.773l-.037.021-3.656 2.033a.343.343 0 0 0 .007.604l3.62 1.906c.72.378.736 1.402.03 1.804l-10.995 6.272a1.03 1.03 0 0 1-1.019 0L.526 16.43a1.03 1.03 0 0 1 .034-1.806l3.66-1.911a.343.343 0 0 0 .01-.603L.524 10.029a1.03 1.03 0 0 1-.041-1.77l.036-.021L9.618 3.06a.7.7 0 0 0 .308-.369l.011-.036c.32-.952 1.046-1.466 2.063-1.466Zm5.076 12.63-4.492 2.586-.041.022a1.02 1.02 0 0 1-.973-.018l-4.478-2.527a.68.68 0 0 0-.65-.01L3.86 15.224a.343.343 0 0 0-.012.602l7.887 4.515a.68.68 0 0 0 .677 0l7.956-4.547a.343.343 0 0 0-.01-.602l-2.623-1.384a.68.68 0 0 0-.659.012"/></svg></span></a></p>
+<p><img alt="Traefik" src="../1_images/traefik.png" /></p>
+</div>
+</div>
+</div>
+
+
+
+
+
+
+
+  
+    
+  
+  
+    
+  
+
+
+  <aside class="md-source-file">
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Last update">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
+    </span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">February 28, 2025</span>
+  </span>
+
+    
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Created">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
+    </span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">February 28, 2025</span>
+  </span>
+
+    
+    
+    
+  </aside>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../.." class="md-footer__link md-footer__link--prev" aria-label="Previous: Home">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Home
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../2_data_engineering_primer/" class="md-footer__link md-footer__link--next" aria-label="Next: Data Engineering Primer">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Data Engineering Primer
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.tabs.link", "content.code.annotate", "content.code.copy", "announce.dismiss", "navigation.tabs", "navigation.top", "navigation.footer", "content.action.view", "content.action.edit"], "search": "../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.f1b6f286.min.js"></script>
+      
+    
+  </body>
+</html>
