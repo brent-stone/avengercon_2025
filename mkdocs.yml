@@ -58,7 +58,7 @@ nav:
     - Python Packages and Wheels: workshop/6_python_wheels.md
     - Dask: workshop/7_dask.md
     - Celery & Flower: workshop/8_celery.md
-    - Prefect & Airflow: workshop/9_prefect_airflow.md
+    - Automation: workshop/9_automation.md
     - ORMs and DBT: workshop/10_ORM_DBT.md
     - Apache Beam: workshop/11_beam.md
   - Other Information:
@@ -99,6 +99,7 @@ markdown_extensions:
 - pymdownx.snippets
 - md_in_html
 - pymdownx.inlinehilite
+- pymdownx.mark
 
 plugins:
   - search

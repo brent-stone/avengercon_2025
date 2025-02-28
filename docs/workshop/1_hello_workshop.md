@@ -29,8 +29,8 @@ get our developer environment setup?
             bash run_dev_desktop.sh <flag>
             ```
 
-        For those on an x86/AMD64 architecture CPU (Intel, AMD, etc.), running `run_dev_desktop.sh` without a flag will
-        pull the right image from GitHub. For those on an ARM architecture CPU (Mac M1, etc.), use the `-m` flag to pull
+        For those on an x86/AMD64 architecture CPU (Intel, AMD, etc.), running `run_dev_desktop.sh` with the `-d` flag will
+        pull the AMD64 image from GitHub. For those on an ARM architecture CPU (Mac M1, etc.), use the `-m` flag to pull
         an ARM compiled workspace from Docker Hub. If neither options work, use the `-l` flag to locally build the image.
         Please note that locally building the image may take several minutes to download and build.
 
@@ -157,7 +157,7 @@ file.
 
 === "Unix (Mac/Linux)"
     ``` bash
-    chmox +x scripts/initialize_env.sh
+    chmod +x scripts/initialize_env.sh
     ./scripts/initialize_env.sh
     ```
 

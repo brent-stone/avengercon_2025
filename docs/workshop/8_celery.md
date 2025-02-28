@@ -1,3 +1,7 @@
+!!! info "Deploy the Celery and Flower Services"
+    Stop you currently running containers started with `run_dev_dask.sh` and then execute
+    `run_dev_celery.sh`. Don't forget `chmod +x run_dev_celery.sh` on unix.
+
 ## What is Celery
 
 Celery is a pure-Python implementation of what Dask calls _bags_ or Prefect calls
