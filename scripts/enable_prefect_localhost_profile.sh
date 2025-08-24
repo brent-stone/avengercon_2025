@@ -2,7 +2,6 @@
 # exit immediately upon error
 set -e
 
-echo "Be sure to run this command from a terminal which has activated the /backend \
-Python poetry virtual environment"
+echo "Be sure to run this command from a terminal which has activated the Python virtual environment"
 
 prefect config set PREFECT_API_URL="http://prefect.localhost:57073/api"

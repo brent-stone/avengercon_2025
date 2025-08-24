@@ -1,16 +1,24 @@
-FROM python:3.11-slim as requirements
+FROM python:3.12-slim AS requirements
 
 WORKDIR /tmp
-RUN mkdir -p requirements
-RUN pip install --upgrade pip poetry
-RUN poetry self add poetry-plugin-export
-COPY ./pyproject.toml pyproject.toml
-COPY ./poetry.lock poetry.lock
-COPY ./scripts/export_poetry_to_req_txt.sh export_poetry_to_req_txt.sh
-RUN chmod +x export_poetry_to_req_txt.sh
-RUN ./export_poetry_to_req_txt.sh
+RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends \
+    curl
+    # Add additional installations here with trailing `\` on each line \
+RUN curl -LsSf https://astral.sh/uv/install.sh | less
+# Cleanup the apt cache to reduce image size
+RUN apt-get purge -y --auto-remove
+RUN rm -rf /var/lib/apt/lists/*
 
-FROM ghcr.io/dask/dask:2024.2.1-py3.11 as dask
+RUN mkdir -p requirements
+RUN pip install --upgrade pip
+COPY ./pyproject.toml pyproject.toml
+COPY ./uv.lock uv.lock
+COPY scripts/uv_export_to_req_txt.sh uv_export_to_req_txt.sh
+RUN chmod +x uv_export_to_req_txt.sh
+RUN ./uv_export_to_req_txt.sh
+
+# https://github.com/dask/dask-docker
+FROM ghcr.io/dask/dask:2025.7.0-py3.12 as dask
 
 USER root
 # Mitigate the issue when running a flow with DaskTaskRunner
@@ -35,7 +43,7 @@ RUN pip install ./
 ENV TZ="America/New_York"
 #RUN cp /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-FROM ghcr.io/dask/dask-notebook:2024.2.1-py3.11 as notebook
+FROM ghcr.io/dask/dask-notebook:2025.7.0-py3.12 as notebook
 
 USER root
 ENV DEBIAN_FRONTEND=noninteractive

@@ -1,26 +1,20 @@
 @echo off
 SETLOCAL EnableDelayedExpansion
 
-WHERE pyenv >nul 2>&1
+WHERE uv >nul 2>&1
 IF ERRORLEVEL 0 (
-    ECHO pyenv-win may not always self-update cleanly. Run 'pyenv update' manually
+    ECHO uv may not always self-update cleanly. Run 'uv self update' manually
 ) ELSE (
-    ECHO pyenv not found: https://pyenv-win.github.io/pyenv-win/
+    ECHO uv not found: https://docs.astral.sh/uv/getting-started/installation/#standalone-installer
 )
 
-pip install --upgrade pip
-
-WHERE poetry >nul 2>&1
+WHERE uv >nul 2>&1
 IF ERRORLEVEL 0 (
-    poetry self update
-    poetry self add poetry-plugin-up
-    poetry self add poetry-plugin-export
-    poetry config warnings.export false
-    poetry config virtualenvs.in-project true
-    poetry up
+    uv self update
+    uv sync --upgrade
 ) ELSE (
-    ECHO Poetry is not installed. Please install poetry then retry.
-    ECHO https://python-poetry.org/docs/#installing-with-the-official-installer
+    ECHO uv is not installed. Please install uv then retry.
+    ECHO https://docs.astral.sh/uv/getting-started/installation/#standalone-installer
     EXIT /B 1
 )
 

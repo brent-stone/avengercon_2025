@@ -5,7 +5,7 @@ services:
   dask-scheduler:
     container_name: avengercon-dask-scheduler
     # https://docs.dask.org/en/latest/deploying-docker.html
-    image: ghcr.io/dask/dask:2025.2.0-py3.12
+    image: ghcr.io/dask/dask:2025.7.0-py3.12
     hostname: dask-scheduler
     ports:
       - target: 8786  # scheduler port
@@ -23,7 +23,7 @@ services:
       - traefik.http.services.avengercon-service-dask-scheduler.loadBalancer.server.port=8787
       - traefik.http.services.avengercon-service-dask-scheduler.loadBalancer.server.scheme=http
       - traefik.http.routers.avengercon-router-dask-scheduler.entrypoints=avengercon-entrypoint-web
-      - traefik.http.routers.avengercon-router-dask-scheduler.rule=Host(`${SUBDOMAIN_DASK}.${DOMAIN}`) && ${TRAEFIK_PRIVATE_IP_CLIENT_RULE}
+      - traefik.http.routers.avengercon-router-dask-scheduler.rule=Host(`${SUBDOMAIN_DASK}.${DOMAIN}`) # && ${TRAEFIK_PRIVATE_IP_CLIENT_RULE}
       - traefik.http.routers.avengercon-router-dask-scheduler.service=avengercon-service-dask-scheduler
       - traefik.http.routers.avengercon-router-dask-scheduler.tls=false
 
@@ -31,11 +31,11 @@ services:
       - traefik.tcp.services.avengercon-service-dask-tcp.loadBalancer.server.port=8786
       - traefik.tcp.routers.avengercon-router-dask-tcp.service=avengercon-service-dask-tcp
       - traefik.tcp.routers.avengercon-router-dask-tcp.entryPoints=avengercon-entrypoint-dask
-      - traefik.tcp.routers.avengercon-router-dask-tcp.rule=HostSNI(`*`) && ${TRAEFIK_PRIVATE_IP_CLIENT_RULE}
+      - traefik.tcp.routers.avengercon-router-dask-tcp.rule=HostSNI(`*`) # && ${TRAEFIK_PRIVATE_IP_CLIENT_RULE}
       - traefik.tcp.routers.avengercon-router-dask-tcp.tls=false
 
   dask-worker:
-    image: ghcr.io/dask/dask:2025.2.0-py3.12
+    image: ghcr.io/dask/dask:2025.7.0-py3.12
     command: [ "dask-worker", "tcp://dask-scheduler:8786" ]
     networks:
       - avengercon
@@ -48,7 +48,7 @@ services:
 
   dask-notebook:
     container_name: avengercon-dask-notebook
-    image: ghcr.io/dask/dask-notebook:2025.2.0-py3.12
+    image: ghcr.io/dask/dask-notebook:2025.7.0-py3.12
     ports:
       - target: 8888
         mode: host
@@ -66,6 +66,6 @@ services:
       - traefik.http.services.avengercon-service-dask-notebook.loadBalancer.server.port=8888
       - traefik.http.services.avengercon-service-dask-notebook.loadBalancer.server.scheme=http
       - traefik.http.routers.avengercon-router-dask-notebook.entrypoints=avengercon-entrypoint-web
-      - traefik.http.routers.avengercon-router-dask-notebook.rule=Host(`${SUBDOMAIN_NOTEBOOK}.${DOMAIN}`) && ${TRAEFIK_PRIVATE_IP_CLIENT_RULE}
+      - traefik.http.routers.avengercon-router-dask-notebook.rule=Host(`${SUBDOMAIN_NOTEBOOK}.${DOMAIN}`) # && ${TRAEFIK_PRIVATE_IP_CLIENT_RULE}
       - traefik.http.routers.avengercon-router-dask-notebook.service=avengercon-service-dask-notebook
       - traefik.http.routers.avengercon-router-dask-notebook.tls=false
