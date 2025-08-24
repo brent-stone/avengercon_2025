@@ -57,7 +57,7 @@ services:
     environment:
       - DASK_SCHEDULER_ADDRESS="tcp://dask-scheduler:8786"
 #      - EXTRA_APT_PACKAGES=graphviz
-      - EXTRA_CONDA_PACKAGES="python-graphviz"
+      - EXTRA_CONDA_PACKAGES="dask distributed dask-image dask-ml dask-labextension bokeh jupyterlab nodejs numpy pandas ipywidgets nomkl bottleneck dask-xgboost h5py imageio ipympl matplotlib mimesis numba pooch prefect prophet py-xgboost pyarrow python-graphviz rasterio requests scikit-image scikit-learn seaborn xarray xgboost gcsfs"
     volumes:
       - ./dask_examples:/home/jovyan/avengercon
     labels:
