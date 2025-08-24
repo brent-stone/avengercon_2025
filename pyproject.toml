@@ -9,11 +9,13 @@ license = "MIT"
 readme = "README.md"
 classifiers = [
   "Programming Language :: Python",
-  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: Implementation :: CPython",
 ]
 
-requires-python = "<4.0,>=3.13"
+# NOTE: Python 3.11 minimum version pin due to Dask docker image latest supported python version as of AUG25
+# https://github.com/dask/dask-docker
+requires-python = "<4.0,>=3.11"
 dependencies = [
     "minio (>=7.2.15,<8.0.0)",
     "pydantic (>=2.10.6,<3.0.0)",
