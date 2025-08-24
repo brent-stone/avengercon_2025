@@ -24,8 +24,6 @@ argon2-cffi-bindings==21.2.0 ; python_full_version >= '3.14'
     # via argon2-cffi
 argon2-cffi-bindings==25.1.0 ; python_full_version < '3.14'
     # via argon2-cffi
-async-timeout==5.0.1 ; python_full_version < '3.11.3'
-    # via redis
 attrs==25.3.0
     # via
     #   aiohttp
@@ -174,8 +172,6 @@ idna==3.10
     # via
     #   requests
     #   yarl
-importlib-metadata==8.7.0 ; python_full_version < '3.12'
-    # via dask
 iniconfig==2.1.0
     # via pytest
 interrogate==1.7.0
@@ -455,8 +451,6 @@ tenacity==9.1.2
     # via pytest-celery
 termcolor==3.1.0
     # via pytest-sugar
-tomli==2.2.1 ; python_full_version <= '3.11'
-    # via coverage
 toolz==1.0.0
     # via
     #   dask
@@ -519,5 +513,3 @@ yarl==1.20.1
     # via aiohttp
 zict==3.0.0
     # via distributed
-zipp==3.23.0 ; python_full_version < '3.12'
-    # via importlib-metadata

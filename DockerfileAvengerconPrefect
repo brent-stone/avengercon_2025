@@ -1,4 +1,4 @@
-FROM python:3.11-slim as requirements
+FROM python:3.12-slim as requirements
 
 WORKDIR /tmp
 RUN mkdir -p requirements
@@ -10,7 +10,7 @@ COPY scripts/uv_export_to_req_txt.sh export_poetry_to_req_txt.sh
 RUN chmod +x export_poetry_to_req_txt.sh
 RUN ./export_poetry_to_req_txt.sh
 
-FROM prefecthq/prefect:2-python3.11 as development
+FROM prefecthq/prefect:3-python3.12 as development
 
 # Mitigate the issue when running a flow with DaskTaskRunner
 # RuntimeError: Unable to find any timezone configuration

@@ -26,5 +26,3 @@ pytest-local-badge==1.0.3
 pytest-sugar==1.1.1
 termcolor==3.1.0
     # via pytest-sugar
-tomli==2.2.1 ; python_full_version <= '3.11'
-    # via coverage

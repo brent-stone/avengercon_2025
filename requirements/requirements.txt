@@ -24,8 +24,6 @@ argon2-cffi-bindings==21.2.0 ; python_full_version >= '3.14'
     # via argon2-cffi
 argon2-cffi-bindings==25.1.0 ; python_full_version < '3.14'
     # via argon2-cffi
-async-timeout==5.0.1 ; python_full_version < '3.11.3'
-    # via redis
 attrs==25.3.0
     # via aiohttp
 billiard==4.2.1
@@ -128,8 +126,6 @@ idna==3.10
     # via
     #   requests
     #   yarl
-importlib-metadata==8.7.0 ; python_full_version < '3.12'
-    # via dask
 jinja2==3.1.6
     # via
     #   bokeh
@@ -345,5 +341,3 @@ yarl==1.20.1
     # via aiohttp
 zict==3.0.0
     # via distributed
-zipp==3.23.0 ; python_full_version < '3.12'
-    # via importlib-metadata

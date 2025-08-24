@@ -5,7 +5,7 @@ services:
   dask-scheduler:
     container_name: avengercon-dask-scheduler
     # https://docs.dask.org/en/latest/deploying-docker.html
-    image: ghcr.io/dask/dask:2025.2.0-py3.12
+    image: ghcr.io/dask/dask:2025.7.0-py3.12
     hostname: dask-scheduler
     ports:
       - target: 8786  # scheduler port
@@ -35,7 +35,7 @@ services:
       - traefik.tcp.routers.avengercon-router-dask-tcp.tls=false
 
   dask-worker:
-    image: ghcr.io/dask/dask:2025.2.0-py3.12
+    image: ghcr.io/dask/dask:2025.7.0-py3.12
     command: [ "dask-worker", "tcp://dask-scheduler:8786" ]
     networks:
       - avengercon
@@ -48,7 +48,7 @@ services:
 
   dask-notebook:
     container_name: avengercon-dask-notebook
-    image: ghcr.io/dask/dask-notebook:2025.2.0-py3.12
+    image: ghcr.io/dask/dask-notebook:2025.7.0-py3.12
     ports:
       - target: 8888
         mode: host

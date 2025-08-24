@@ -1,4 +1,4 @@
-FROM python:3.11-slim AS requirements
+FROM python:3.12-slim AS requirements
 
 WORKDIR /tmp
 RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends \
@@ -18,7 +18,7 @@ RUN chmod +x uv_export_to_req_txt.sh
 RUN ./uv_export_to_req_txt.sh
 
 # https://github.com/dask/dask-docker
-FROM ghcr.io/dask/dask:2025.7.0-py3.11 as dask
+FROM ghcr.io/dask/dask:2025.7.0-py3.12 as dask
 
 USER root
 # Mitigate the issue when running a flow with DaskTaskRunner
@@ -43,7 +43,7 @@ RUN pip install ./
 ENV TZ="America/New_York"
 #RUN cp /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-FROM ghcr.io/dask/dask-notebook:2025.7.0-py3.11 as notebook
+FROM ghcr.io/dask/dask-notebook:2025.7.0-py3.12 as notebook
 
 USER root
 ENV DEBIAN_FRONTEND=noninteractive

@@ -1,4 +1,4 @@
-FROM python:3.11-slim AS requirements
+FROM python:3.12-slim AS requirements
 
 WORKDIR /tmp
 RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends \
@@ -17,7 +17,7 @@ COPY scripts/uv_export_to_req_txt.sh uv_export_to_req_txt.sh
 RUN chmod +x uv_export_to_req_txt.sh
 RUN ./uv_export_to_req_txt.sh
 
-FROM python:3.11-slim AS base
+FROM python:3.12-slim AS base
 
 # Ensure curl is available for healthcheck via curl
 # The additional packages are to support compiling google-re python wheel with the C++
