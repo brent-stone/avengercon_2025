@@ -31,55 +31,53 @@ dependencies = [
     # https://pandas.pydata.org/pandas-docs/stable/getting_started/install.html#install-optional-dependencies
     "pandas[aws,excel,fss,output-formatting,parquet,plot,xml] (>=2.2.3,<3.0.0)",
     "dask[complete] (>=2025.2.0,<2026.0.0)",
-    "redis (>=5.2.1,<6.0.0)",
     "gcsfs (>=2025.7.0,<2026.0.0)",
+    "redis>=5.2.1",
 ]
 
 [project.urls]
 repository = "https://github.com/brent-stone/avengercon_2025"
 documentation = "https://brent-stone.github.io/avengercon_2025/"
-#
-#[tool.poetry]
-#packages = [{include = "avengercon"}]
+
 
 [build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["uv_build>=0.8.13,<0.9.0"]
+build-backend = "uv_build"
 
-[tool.poetry.requires-plugins]
-poetry-plugin-export = ">=1.9"
+[tool.uv.build-backend]
+module-name = "avengercon"
+module-root = ""
 
-[tool.poetry.group.dev.dependencies]
-pytest = "^8.4.1"
-black = {extras = ["colorama"], version = "^25.1.0"}
-pytest-cov = "^6.2.1"
-pre-commit = "^4.3.0"
-mypy = "^1.17.1"
-interrogate = "^1.7.0"
-pytest-sugar = "^1.1.0"
-mkdocs-material = "^9.6.18"
-mkdocstrings = {extras = ["python"], version = "^0.28.3"}
-tox = "^4.28.4"
-coverage = "^7.10.4"
-pytest-celery = {extras = ["redis"], version = "^1.2.1"}
-
-
-[tool.poetry.group.pytest.dependencies]
-pytest = "^8.4.1"
-pytest-cov = "^6.2.1"
-pytest-asyncio = "^0.25.3"
-pytest-local-badge = "^1.0.3"
-pytest-sugar = "^1.1.0"
-
-
-[tool.poetry.group.mypy.dependencies]
-mypy = "^1.17.1"
-
-
-[tool.poetry.group.mkdocs.dependencies]
-mkdocs-material = "^9.6.18"
-mkdocstrings = {extras = ["python"], version = "^0.28.3"}
-mkdocs-git-revision-date-localized-plugin = "^1.4.7"
+[dependency-groups]
+dev = [
+    "black[colorama]>=25.1.0",
+    "coverage>=7.10.5",
+    "interrogate>=1.7.0",
+    "mkdocs-material>=9.6.18",
+    "mkdocstrings[python]>=0.30.0",
+    "mypy>=1.17.1",
+    "pre-commit>=4.3.0",
+    "pytest>=8.4.1",
+    "pytest-celery[redis]>=1.2.1",
+    "pytest-cov>=6.2.1",
+    "pytest-sugar>=1.1.1",
+    "tox>=4.28.4",
+]
+mkdocs = [
+    "mkdocs-git-revision-date-localized-plugin>=1.4.7",
+    "mkdocs-material>=9.6.18",
+    "mkdocstrings[python]>=0.30.0",
+]
+mypy = [
+    "mypy>=1.17.1",
+]
+pytest = [
+    "pytest>=8.4.1",
+    "pytest-asyncio>=1.1.0",
+    "pytest-cov>=6.2.1",
+    "pytest-local-badge>=1.0.3",
+    "pytest-sugar>=1.1.1",
+]
 
 [tool.pytest.ini_options]
 # https://docs.pytest.org/en/latest/reference/customize.html
